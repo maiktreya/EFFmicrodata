@@ -1,0 +1,20 @@
+
+Managers: Occupations that involve planning, organizing, directing, and controlling the activities of others.
+Professionals: Occupations that require advanced knowledge and skills in a particular field, typically acquired through formal education and training.
+Technicians and Associate Professionals: Occupations that require technical knowledge and skills in a particular field, typically acquired through specialized training or on-the-job experience.
+Clerical Support Workers: Occupations that involve the performance of administrative and secretarial tasks, typically requiring a good level of literacy and numeracy.
+Service and Sales Workers: Occupations that involve the provision of services to customers or the sale of goods.
+Skilled Agricultural, Forestry and Fishery Workers: Occupations that require specialized knowledge and skills in the agricultural, forestry, or fishing industries.
+Craft and Related Trades Workers: Occupations that require the manual skills to make, repair, or maintain goods and structures.
+Plant and Machine Operators, and Assemblers: Occupations that involve the operation of machinery and equipment, or the assembly of goods.
+Elementary Occupations: Occupations that involve routine tasks that require little or no specialized knowledge or skills.
+Armed Forces Occupations: Occupations that involve the defense of a country's territory and people.
+
+
+isco08_main_groups <- c("Managers", "Professionals", "Technicians and Associate Professionals",
+                       "Clerical Support Workers", "Service and Sales Workers",
+                       "Skilled Agricultural, Forestry and Fishery Workers",
+                       "Craft and Related Trades Workers",
+                       "Plant and Machine Operators, and Assemblers",
+                       "Elementary Occupations",
+                       "Armed Forces Occupations")

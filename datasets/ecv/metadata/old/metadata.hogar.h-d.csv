@@ -1,0 +1,165 @@
+variable,descripcion
+HB010,Año de la encuesta
+HB020,País
+HB030,Identificación transversal del hogar
+HB050,Mes de la entrevista al hogar
+HB050_F,'Variable que indica si HB050 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HB060,Año de la entrevista al hogar
+HB060_F,'Variable que indica si HB060 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HB070,Identificación personal del informante
+HB070_F,'Variable que indica si HB070 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HB080,Identificación de la primera persona responsable de la vivienda
+HB080_F,'Variable que indica si HB080 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HB100,Número de minutos empleados en cumplimentar el cuestionario sobre el hogar
+HB100_F,'Variable que indica si HB100 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HB120,Número de miembros del hogar
+HB120_F,'Variable que indica si HB120 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HY020,Renta disponible total del hogar en el año anterior al de encuesta (nota: esta variable contiene las rentas percibidas de esquemas privados de pensiones)
+HY020_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY022,Renta disponible total del hogar antes de transferencias sociales excepto prestaciones por jubilación y por supervivencia en el año anterior al de encuesta
+HY022_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY023,Renta disponible total del hogar antes de transferencias sociales incluidas prestaciones por jubilación y por supervivencia en el año anterior al de encuesta
+HY023_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY030N,'Alquiler imputado (El alquiler imputado se aplica a los hogares que no pagan un alquiler completo por ser propietarios o por ocupar una vivienda alquilada a un precio inferior al de mercado o a título gratuito. El valor que se imputa es el equivalente al alquiler que se pagaría en el mercado por una vivienda similar a la ocupada, menos cualquier alquiler realmente abonado).'
+HY030N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY040N,Renta neta procedente del alquiler de una propiedad o terreno en el año anterior al de encuesta
+HY040N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY050N,Ayuda por familia/hijos en el año anterior al de la enc
+HY050N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY060N,Ingresos por asistencia social en el año anterior al de encuesta
+HY060N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY070N,Ayuda para vivienda en el año anterior al de encuesta
+HY070N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY080N,Transferencias periódicas monetarias percibidas de otros hogares en el año anterior al de encuesta
+HY080N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY081N,Transferencias periódicas monetarias percibidas de otros hogares en el año anterior al de encuesta (pensiones alimenticias a hijos o compensatorias a cónyuges)
+HY081N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY090N,'Intereses, dividendos y ganancias netos de inversiones de capital en empresas no constituidas en sociedad en el año anterior al de encuesta'
+HY090N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY100N,'Intereses pagados del préstamo para la compra de la vivienda principal, en el año anterior al de encuesta'
+HY100N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY110N,Renta neta percibida por los menores de 16 años en el año anterior al de encuesta
+HY110N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY120N,Impuesto sobre el patrimonio en el año anterior al de la encuesta
+HY120N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY130N,Transferencias periódicas monetarias abonadas a otros hogares en el año anterior al de encuesta
+HY130N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY131N,Transferencias periódicas monetarias abonadas a otros hogares en el año anterior al de encuesta (pensiones alimenticias a hijos o compensatorias a cónyuges)
+HY131N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY145N,Devoluciones/ingresos complementarios por ajustes En impuestos en el año anterior al de encuesta (declaración del IRPF)
+HY145N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY170N,Autoconsumo en el año anterior al de encuesta
+HY170N_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY010,Renta bruta total del hogar en el año anterior al de encuesta
+HY010_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY040G,Renta bruta procedente del alquiler de una propiedad o terreno en el año anterior al de encuesta
+HY040G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY050G,Ayuda por familia/hijos en el año anterior al de encuesta
+HY050G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY060G,Ingresos por asistencia social en el año anterior al de encuesta
+HY060G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY070G,Ayuda para vivienda en el año anterior al de encuesta
+HY070G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY080G,Transferencias periódicas monetarias percibidas de otros hogares en el año anterior al de encuesta
+HY080G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY081G,Transferencias periódicas monetarias percibidas de otros hogares en el año anterior al de encuesta (pensiones alimenticias a hijos o compensatorias a cónyuges)
+HY081G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY090G,'Intereses, dividendos y ganancias brutos de inversiones de capital en empresas no constituidas en sociedad en el año anterior al de encuesta'
+HY090G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY100G,'Intereses pagados del préstamo para la compra de la vivienda principal, en el año anterior al de encuesta'
+HY100G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY110G,Renta bruta percibida por los menores de 16 años en el año anterior al de encuesta
+HY110G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY120G,'Impuesto sobre el patrimonio en el año anterior al de encuesta. 
+A partir de ECV2021 se incluye en esta variable el Impuesto sobre Bienes Inmuebles de la vivienda principal, cuando el régimen de tenencia sea en propiedad.'
+HY120G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY130G,Transferencias periódicas monetarias abonadas a otros hogares en el año anterior al de encuesta
+HY130G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY131G,Transferencias periódicas monetarias abonadas a otros hogares en el año anterior al de encuesta (pensiones alimenticias a hijos o compensatorias a cónyuges)
+HY131G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HY140G,Impuesto sobre la renta y cotizaciones sociales
+HY140G_F,Variable que indica información complementaria (fuente y tipo de información recogida)
+HS011,¿Se han producido retrasos en el pago de la hipoteca o del alquiler del hogar en los últimos 12 meses?
+HS011_F,'Variable que indica si HS011 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS021,¿Se han producido retrasos en el pago de las facturas
+HS021_F,'Variable que indica si HS021 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS022,'¿Se benefició el hogar de algún bono social para hacer frente a gastos de electricidad, calefacción, gas, etc.?'
+HS022_F,'Variable que indica si HS022 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS031,¿Se han producido retrasos en el pago de compras aplazadas o de otros préstamos (deudas no relacionadas con la vivienda principal) en los últimos 12 meses?
+HS031_F,'Variable que indica si HS031 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS040,'¿Puede el hogar permitirse ir de vacaciones fuera de casa, al menos una semana al año?'
+HS040_F,'Variable que indica si HS040 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS050,'¿Puede el hogar permitirse una comida de carne, pollo o pescado (o equivalentes para los vegetarianos) al menos cada dos días?'
+HS050_F,'Variable que indica si HS050 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS060,¿Tiene el hogar capacidad para afrontar gastos imprevistos?
+HS060_F,'Variable que indica si HS060 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS090,¿Tiene el hogar ordenador?
+HS090_F,'Variable que indica si HS090 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS110,¿Tiene el hogar coche?
+HS110_F,'Variable que indica si HS110 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS120,Capacidad del hogar para llegar a fin de mes
+HS120_F,'Variable que indica si HS120 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS150,Los desembolsos por compras a plazos o por devolución de préstamos no relacionados con la vivienda principal suponen para el hogar:
+HS150_F,'Variable que indica si HS150 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HD080,'¿El hogar podría sustituir los muebles estropeados 
+  o viejos?'
+HD080_F,'Variable que indica si HD080 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HH010,Tipo de vivienda
+HH010_F,'Variable que indica si HH010 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HH021,Régimen de tenencia
+HH021_F,'Variable que indica si HH021 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HH030,Número de habitaciones de la vivienda
+HH030_F,'Variable que indica si HH030 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HH050,¿Puede el hogar permitirse mantener la vivienda con una temperatura adecuada durante los meses de invierno?
+HH050_F,'Variable que indica si HH050 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HH060,Alquiler actual por la vivienda ocupada
+HH060_F,'Variable que indica si HH060 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HH070,'Gastos de la vivienda: Alquiler (si la vivienda se encuentra en régimen de alquiler), intereses de la hipoteca (para viviendas en propiedad con pagos pendientes) y otros gastos asociados (comunidad, agua, electricidad, gas, etc.)'
+HH070_F,'Variable que indica si HH070 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HI010,¿Se ha producido un cambio en los ingresos del hogar en los últimos 12 meses?
+HI010_F,'Variable que indica si HI010 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HI020,'¿Cuál ha sido el motivo principal del aumento de 
+los ingresos?'
+HI020_F,'Variable que indica si HI020 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HI030,'¿Cuál ha sido el motivo principal de la disminución de 
+los ingresos?'
+HI030_F,'Variable que indica si HI030 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HI040,'Pensando en los ingresos de su hogar, ¿qué espera 
+que pase en los próximos 12 meses?  '
+HI040_F,'Variable que indica si HI040 está completa, falta o simplemente no es aplicable en el registro en cuestión'
+cuotahip,Cuota hipotecaria mensual (importe del último recibo mensual del préstamo solicitado para la compra de la vivienda principal). Incluye amortización e intereses
+cuotahip_F,'Variable que indica si CUOTAHIP está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HX040,Número de miembros del hogar
+HX060,Tipo de hogar (1)
+HX240,'Unidades de consumo. Escala OCDE modificada. Número: 1-50  (2)
+'
+vhRentaa,Renta disponible total del hogar en el año anterior al de la entrevista (nota: esta variable contiene las rentas percibidas de esquemas privados de pensiones). Variable utilizada en los indicadores armonizados de pobreza
+vhRentaAIa,'Renta disponible total del hogar en el año anterior al de la entrevista, incluyendo el alquiler imputado (nota: esta variable contiene las rentas percibidas de esquemas privados de pensiones)'
+vhPobreza,'Hogar en riesgo de pobreza. Umbral de pobreza: es el 60% de la mediana de los ingresos anuales -vhRentaa- por unidad de consumo (escala OCDE modificada), tomando la distribución de personas. Los ingresos por unidad de consumo se obtienen dividiendo los ingresos totales del hogar entre el número de unidades de consumo'
+vhMATDEP,'Hogar en carencia material severa. Son los hogares con carencia en al menos cuatro conceptos de una lista de nueve. Los conceptos considerados son:
+No puede permitirse ir de vacaciones al menos una semana al año
+No puede permitirse una comida de carne, pollo o pescado al menos cada dos días
+No puede permitirse mantener la vivienda con una temperatura adecuada
+No tiene capacidad para afrontar gastos imprevistos
+Ha tenido retrasos en el pago de gastos relacionados con la vivienda principal (hipoteca o alquiler, recibos de gas, comunidad...) o en compras a plazos en los últimos 12 meses
+No puede permitirse disponer de un automóvil
+No puede permitirse disponer de teléfono
+No puede permitirse disponer de un televisor en color
+No puede permitirse disponer de una lavadora
+A partir de ECV2021 se dejan de recoger los conceptos ''No puede permitirse disponer de un teléfono'', '' No puede permitirse disponer de un televisor en color'', y '' No puede permitirse disponer de una lavadora'', asumiéndose que el hogar no tiene carencia en esos conceptos.
+'
+HS200,Los gastos totales de asistencia médica (excepto dentista) suponen para el hogar:
+HS200_F,'Variable que indica si la variable está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS210,Los gastos totales de asistencia dental suponen para el hogar:
+HCH020_F,'Variable que indica si la variable está completa, falta o simplemente no es aplicable en el registro en cuestión'
+HS220,Los gastos totales en medicamentos suponen para el hogar:
+HCH030_F,'Variable que indica si la variable está completa, falta o simplemente no es aplicable en el registro en cuestión'
+DB010,Año de la encuesta  
+DB020,País 
+DB030,Identificación transversal del hogar 
+DB040,Región 
+DB040_F,'Variable que indica si DB040 esta completa, falta o simplemente no es aplicable en el registro en cuestión'
+DB090,Factor transversal del hogar 
+DB090_F,'Variable que indica si DB090 esta completa, falta o simplemente no es aplicable en el registro en cuestión'
+DB100,Grado de urbanización 
+DB100_F,'Variable que indica si DB100 esta completa, falta o simplemente no es aplicable en el registro en cuestión'
