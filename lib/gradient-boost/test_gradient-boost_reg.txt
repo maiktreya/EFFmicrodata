@@ -1,0 +1,11 @@
+gbm(formula = actreales ~ sex + bage + renthog + class, distribution = "gaussian", 
+    data = train_set, weights = facine3, n.trees = 500)
+A gradient boosted model with gaussian loss function.
+500 iterations were performed.
+There were 4 predictors of which 4 had non-zero influence.
+            var   rel.inf
+class     class 73.015440
+renthog renthog 23.710863
+bage       bage  3.174189
+sex         sex  0.099509
+[1] "Test MSE:  1913103900254.4"

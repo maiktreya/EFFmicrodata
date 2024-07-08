@@ -1,0 +1,62 @@
+```{r}```
+
+# LME library examples
+
+library(magrittr)
+library(data.table)
+library(survey)
+library(lme4)
+
+# import test pseudo-panel statistics
+
+dt_eff <- fread("output/rentsbi.csv")
+
+# transform data accordingly
+
+dt_eff[, variable_num := 0][variable == "prop_ren_w", variable_num := 1][variable == "prop_ren_k", variable_num := 2][, years_bi := rep(1:7, 2)]
+dt_mixed <- dt_eff[, list(years_bi, variable_num, value)]
+setnames(dt_mixed,
+    old = c("years_bi", "variable_num", "value"),
+    new = c("year", "class", "rents")
+)
+dt_mixed$Covariate1 <- rbinom(n = nrow(dt_mixed), size = 10, prob = 0.2)
+
+## estimate random correlated effects (Mixed Models)
+
+# only effects, no covariates
+
+fm1 <- lmer(rents ~ year + (year | class), data = dt_mixed)
+fm1 %>%
+    summary() %>%
+    print()
+print("-----------------------------")
+fm1 %>% print()
+print("-----------------------------")
+print("-----------------------------")
+
+# effects + one covariate/regressor
+
+fm2 <- lmer(rents ~ year + Covariate1 + (year | class), data = dt_mixed)
+fm2 %>%
+    summary() %>%
+    print()
+print("-----------------------------")
+fm2 %>% print()
+print("-----------------------------")
+print("-----------------------------")
+dt <- "saves/eff-pool-2002-2020.csv" %>% fread() # Data table con microdatos anuales
+years <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020)
+means <- list()
+dt[, rentsbi := 0][rents > 0, 1 * renthog & rents > 1000]
+for (i in seq_along(years)) {
+    dt_yr <- dt[sv_year == years[i]] %>% data.frame()
+    dt_sv <- svydesign(
+        ids = ~1,
+        data = dt_yr,
+        weights = ~ dt_yr$facine3
+    )
+    means[[i]] <- svyby(~rentsbi, ~class, dt_sv, svymean)
+}
+print(means)
+
+```{r}```
