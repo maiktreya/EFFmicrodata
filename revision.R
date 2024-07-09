@@ -16,5 +16,5 @@ for (i in years) {
         df <- fread(paste0("full/", sel_year, "/otras_secciones_", sel_year, "_imp", j, ".csv"))
         selection <- colnames(df)[colnames(df) %like% "p2_9b_"]
         obj_table[i] <- df[, ..selection] }
-        obj_list[[j]] <- obj table
+        obj_list[[j]] <- obj_table
 }
