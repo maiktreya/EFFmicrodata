@@ -1,5 +1,5 @@
 ## THIS PARTIAL SCRIPT SHOULD BE USED TOGETHER WITH EFF_API MAIN ONLY TO INCORPORATE NEW EFF RELEASES OR MODIFY VARIABLE DEFINITIONS. IT USES ORIGINAL BDE .dta FILES (SLOW)
-path <- paste0(".datasets/full/EFF_", sel_year, "/")
+path <- paste0("datasets/full/EFF_", sel_year, "/")
 source("src/data_selectors.R")
 ##### SELECTED VARIABLES IDS ANDcolnames
 full_selection <- sapply(paste0(path, selectors_eff_no_sec6), haven::read_dta)
@@ -14,11 +14,11 @@ full_mean <-
 kind <- c("p6_30_1", "p6_30_2", "p6_30_3", "p6_30_4", "p6_30_5", "p6_30_6", "p6_30_7", "p6_30_8")
 class <- c("p6_1c1_1", "p6_1c2_1", "p6_1c3_1", "p6_1c4_1", "p6_1c5_1", "p6_1c6_1", "p6_1c7_1", "p6_1c8_1")
 valor_2002_2005 <- c("p5_7_1", "p5_7_2", "p5_7_1", "p5_7_1", "p5_7_1", "p5_7_1", "p5_7_1", "p5_7_1", "p5_7_1", "p5_7_1")
-s6_1 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[class]
-s6_2 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[class]
-s6_3 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[class]
-s6_4 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[class]
-s6_5 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[class]
+s6_1 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[class]
+s6_2 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[class]
+s6_3 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[class]
+s6_4 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[class]
+s6_5 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[class]
 s6_sum <- (s6_1 + s6_2 + s6_3 + s6_4 + s6_5) / 5
 s6_sum1 <- s6_sum$p6_1c1_1
 s6_sum2 <- s6_sum$p6_1c2_1
@@ -29,11 +29,11 @@ s6_sum6 <- s6_sum$p6_1c6_1
 s6_sum7 <- s6_sum$p6_1c7_1
 s6_sum8 <- s6_sum$p6_1c8_1
 
-s637_1 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_37_1_1")]
-s637_2 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_37_1_1")]
-s637_3 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_37_1_1")]
-s637_4 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_37_1_1")]
-s637_5 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_37_1_1")]
+s637_1 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_37_1_1")]
+s637_2 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_37_1_1")]
+s637_3 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_37_1_1")]
+s637_4 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_37_1_1")]
+s637_5 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_37_1_1")]
 s637_1[is.na(s637_1)] <- 0
 s637_2[is.na(s637_2)] <- 0
 s637_3[is.na(s637_3)] <- 0
@@ -43,62 +43,62 @@ p6_37 <- (s637_1 + s637_2 + s637_3 + s637_4 + s637_5) / 5
 
 
 if (sel_year %in% c(2002, 2005)) {
-    empre_1 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_30_1")]
-    empre_2 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_30_1")]
-    empre_3 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_30_1")]
-    empre_4 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_30_1")]
-    empre_5 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_30_1")]
+    empre_1 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_30_1")]
+    empre_2 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_30_1")]
+    empre_3 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_30_1")]
+    empre_4 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_30_1")]
+    empre_5 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_30_1")]
     empre <- (empre_1 + empre_2 + empre_3 + empre_4 + empre_5) / 5
-    auton_1 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_36_1_1")]
-    auton_2 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_36_1_1")]
-    auton_3 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_36_1_1")]
-    auton_4 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_36_1_1")]
-    auton_5 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_36_1_1")]
+    auton_1 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_36_1_1")]
+    auton_2 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_36_1_1")]
+    auton_3 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_36_1_1")]
+    auton_4 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_36_1_1")]
+    auton_5 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_36_1_1")]
     auton <- (auton_1 + auton_2 + auton_3 + auton_4 + auton_5) / 5
 } else {
-    empre_1 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_1c2_1")]
-    empre_2 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_1c2_1")]
-    empre_3 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_1c2_1")]
-    empre_4 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_1c2_1")]
-    empre_5 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_1c2_1")]
+    empre_1 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_1c2_1")]
+    empre_2 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_1c2_1")]
+    empre_3 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_1c2_1")]
+    empre_4 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_1c2_1")]
+    empre_5 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_1c2_1")]
     empre <- (empre_1 + empre_2 + empre_3 + empre_4 + empre_5) / 5
     # auton_alt <- (full_mean[,"p4_105_1"]+full_mean[,"p4_105_2"]+full_mean[,"p4_105_3"]+full_mean[,"p4_105_4"]+full_mean[,"p4_105_5"]+full_mean[,"p4_105_6"]) /6 # nolint
     auton <- full_mean[, "p4_105_1"]
 }
 
-s6b_dir1 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_3_1")]
-s6b_dir2 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_3_1")]
-s6b_dir3 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_3_1")]
-s6b_dir4 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_3_1")]
-s6b_dir5 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_3_1")]
+s6b_dir1 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_3_1")]
+s6b_dir2 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_3_1")]
+s6b_dir3 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_3_1")]
+s6b_dir4 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_3_1")]
+s6b_dir5 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_3_1")]
 s6b_dir <- (s6b_dir1 + s6b_dir2 + s6b_dir3 + s6b_dir4 + s6b_dir5) / 5
 s6b_dir <- as.numeric(unlist(s6b_dir))
 s6b_dir[!(s6b_dir %in% 1)] <- NA
 
-s6b_1 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_30_1")]
-s6b_2 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_30_1")]
-s6b_3 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_30_1")]
-s6b_4 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_30_1")]
-s6b_5 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_30_1")]
+s6b_1 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_30_1")]
+s6b_2 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_30_1")]
+s6b_3 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_30_1")]
+s6b_4 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_30_1")]
+s6b_5 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_30_1")]
 s6b_sum <- (s6b_1 + s6b_2 + s6b_3 + s6b_4 + s6b_5) / 5
 
-s681_1 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_81_1")] %>%
+s681_1 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp1.dta"))[c("p6_81_1")] %>%
     unlist() %>%
     unname() %>%
     as.numeric()
-s681_2 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_81_1")] %>%
+s681_2 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp2.dta"))[c("p6_81_1")] %>%
     unlist() %>%
     unname() %>%
     as.numeric()
-s681_3 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_81_1")] %>%
+s681_3 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp3.dta"))[c("p6_81_1")] %>%
     unlist() %>%
     unname() %>%
     as.numeric()
-s681_4 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_81_1")] %>%
+s681_4 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp4.dta"))[c("p6_81_1")] %>%
     unlist() %>%
     unname() %>%
     as.numeric()
-s681_5 <- haven::read_dta(paste0(".datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_81_1")] %>%
+s681_5 <- haven::read_dta(paste0("datasets/full/EFF_", sel_year, "/seccion6_imp5.dta"))[c("p6_81_1")] %>%
     unlist() %>%
     unname() %>%
     as.numeric()

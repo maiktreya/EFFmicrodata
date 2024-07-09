@@ -15,7 +15,7 @@ for (i in seq_along(years)) {
     sel_year <- years[i]
     source("src/EFF-out-full.R")
     to_export <- data.table(survey_weights$variables)
-    to_export %>% fwrite(paste0(".datasets/", sel_year, "-EFF.microdat.csv"))
+    to_export %>% fwrite(paste0("datasets/", sel_year, "-EFF.microdat.csv"))
     rm(list = setdiff(ls(), c("years", "start_time")))
 }
 
