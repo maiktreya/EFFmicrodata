@@ -9,6 +9,8 @@ years <- c(2011)
 obj <- list()
 
 for (i in years) {
+    total_df <- fread(paste0("datasets/",sel_year ,"-EFF.microdat.csv"))
+
     for (j in 1:5) {{ sel_year <- i
         df <- fread(paste0("full/", sel_year, "/otras_secciones_", sel_year, "_imp", j, ".csv"))
         selection <- colnames(df)[colnames(df) %like% "p2_9b_"]
