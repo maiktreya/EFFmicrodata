@@ -30,12 +30,16 @@ for(z in seq_along(years))  full_mean[[z]][,1] %>% nrow() %>% print()
 
 #-----------------------------------------------------------------------------#
 
-# Working class subsample size
 
-# Young people subsample size
-
-# P29b
 
 #-----------------------------------------------------------------------------#
 
+# Working class subsample size
 
+full_mean[[1]]$nsitlabdom %>% unique()
+
+# Young people subsample size
+
+# Young people hoeownership
+
+# P29b % population
