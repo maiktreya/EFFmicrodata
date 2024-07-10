@@ -6,6 +6,7 @@ library(survey)
 years <- c(2008, 2011, 2014, 2017, 2020) # You can expand this later if needed
 obj_list <- list()
 full_mean <- list()
+ecv_mean <- list()
 
 # for incorporating new variables from
 for (i in years) {
@@ -13,8 +14,10 @@ for (i in years) {
 
     for (j in 1:5) {
         df <- fread(paste0("EFFSpain/full/", i, "/otras_secciones_", i, "_imp", j, ".csv"))
+        ec <- fread(paste0("EFF-ECVSpain/ECV/output/filtered_data", i, ".csv"))
         selection <- colnames(df)[colnames(df) %like% "p2_9b_"]
         year_data[[j]] <- df[, ..selection]
+        ecv_mean[[j]] <- data.table(ec)
     }
 
     obj_list[[as.character(i)]] <- year_data
@@ -28,7 +31,7 @@ for (p in 1:5) full_mean[[p]] <- fread(paste0("EFFSpain/datasets/", years[p], "-
 for (x in years) {
     obj_list[[as.character(x)]][[1]][, 1] %>%
         nrow()
-    full_mean[[z]][nsitlabdom == 1, 1]
+    # full_mean[[z]][nsitlabdom == 1, 1]
 }
 value <- c()
 for (z in seq_along(years)) {
@@ -43,8 +46,8 @@ for (z in seq_along(years)) {
 }
 
 #-----------------------------------------------------------------------------#
- full_mean[[1]][, homeowner := as.factor(np2_1)]
- nrow(full_mean[[1]][homeowner == 1,]) / nrow(full_mean[[1]]) 
+full_mean[[1]][, homeowner := as.factor(np2_1)]
+nrow(full_mean[[1]][homeowner == 1, ]) / nrow(full_mean[[1]])
 
 #-----------------------------------------------------------------------------#
 
@@ -58,5 +61,17 @@ full_mean[[1]]$nsitlabdom %>% unique()
 
 
 # Share of income of working class rents income
+
+# HY090G1, PL031
+ec_sv <- list()
+
+for (p in 1:5) {
+    transf <- ecv_mean[[p]] %>% data.frame()
+    ec_sv[[p]] <- svydesign(
+        ids = ~1,
+        data = transf,
+        weights = ~ transf$PB040
+    )
+}
 
 # P29b % population
