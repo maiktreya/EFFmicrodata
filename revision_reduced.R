@@ -59,4 +59,4 @@ colnames(pre_results) <- quantile_cuts
 pre_results <- cbind(pre_results, "means" = as.numeric(alt_results_year), "perct" = as.numeric(alt_percents)) %>% data.table(keep.rownames = T)
 pre_results[, year := sel_year]
 ifelse(reduced == T, pre_results[, kind := "greater-0"], pre_results[, kind := "all-values"])
-alt_results <- rbind(alt_results, pre_results)
+alt_results <- rbind(alt_results, pre_results)  
