@@ -85,18 +85,22 @@ for (p in 1:5) {
 
 # Young people homeownership
 years <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020) # You can expand this later if
-
+resu <- resu2 <- c()
 for (p in seq_along(years)) {
     full_mean[[p]] <- fread(paste0("EFFSpain/datasets/", years[p], "-EFF.microdat.csv"))
-    full_mean[[p]][, homeowner := as.factor(np2_1)][, young_homeowner := homeowner == 1 & bage == 1]
+    full_mean[[p]][, homeowner := as.factor(np2_1)]
+    full_mean[[p]][, young_homeowner := 0][homeowner == 1 & bage == 1, young_homeowner := 1]
+    full_mean[[p]][, young_w_homeowner := 0][young_homeowner == 1 & nsitlabdom == 1, young_w_homeowner := 1]
     transf <- full_mean[[p]] %>% data.frame()
     df_sv[[p]] <- svydesign(
         ids = ~1,
         data = transf,
         weights = ~ transf$facine3
     )
-    resu <- prop.table(svytable(~young_homeowner, subset(df_sv[[p]], bage == 1)))
-    print(resu)
+    resu[[p]] <- prop.table(svytable(~young_homeowner, subset(df_sv[[p]], bage == 1)))[2]
+    resu2[[p]] <- prop.table(svytable(~young_w_homeowner, subset(df_sv[[p]], bage == 1)))[2]
 }
-
+print(resu2)
 # Share of income of working class rents income
+    ft_ren <- svyby(~HY040N, ~PL031, ec_sv[[1]], svymean, keep.names = F, keep.var = F) # RENTAL ALQ. V
+    ft_hog <- as.data.frame(svyby(~HY040N, ~PL031, ec_sv[[1]], svymean, keep.names = F, keep.var = F))[-1]
