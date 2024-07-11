@@ -66,11 +66,12 @@ for (i in 1:5) {
         obj_list[[i]][[j]][, sum := as.numeric(p2_9b_1) + as.numeric(p2_9b_2) + as.numeric(p2_9b_3) + as.numeric(p2_9b_4)]
     }
     nueva[[i]] <- obj_list[[i]][[1]]$sum + obj_list[[i]][[1]]$sum + obj_list[[i]][[1]]$sum + obj_list[[i]][[1]]$sum + obj_list[[i]][[1]]$sum
-    part <- data.table(nueva[[i]]/5)
+    part <- data.table(nueva[[i]] / 5)
     full_mean[[i]][, p2_9b := part]
 }
 
 for (p in 1:5) {
+    full_mean[[p]][, homeowner := as.factor(np2_1)][, young_homeowner := homeowner == 1 & bage == 1]
     transf <- full_mean[[p]] %>% data.frame()
     df_sv[[p]] <- svydesign(
         ids = ~1,
@@ -83,7 +84,18 @@ for (p in 1:5) {
 
 
 # Young people homeownership
-full_mean[[1]][, homeowner := as.factor(np2_1)]
-nrow(full_mean[[1]][homeowner == 1 & bage == 1, ]) / nrow(full_mean[[1]])
+years <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020) # You can expand this later if
+
+for (i in seq_along(years)) {
+    full_mean[[p]][, homeowner := as.factor(np2_1)][, young_homeowner := homeowner == 1 & bage == 1]
+    transf <- full_mean[[p]] %>% data.frame()
+    df_sv[[p]] <- svydesign(
+        ids = ~1,
+        data = transf,
+        weights = ~ transf$facine3
+    )
+    resu <- prop.table(svytable(~young_homeowner, subset(df_sv[[i]], bage == 1)))
+    print(resu)
+}
 
 # Share of income of working class rents income
