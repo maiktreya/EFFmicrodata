@@ -66,7 +66,7 @@ for (i in 1:5) {
         obj_list[[i]][[j]][, sum := as.numeric(p2_9b_1) + as.numeric(p2_9b_2) + as.numeric(p2_9b_3) + as.numeric(p2_9b_4)]
     }
     nueva[[i]] <- obj_list[[i]][[1]]$sum + obj_list[[i]][[1]]$sum + obj_list[[i]][[1]]$sum + obj_list[[i]][[1]]$sum + obj_list[[i]][[1]]$sum
-    part <- data.table(nueva[[i]])
+    part <- data.table(nueva[[i]]/5)
     full_mean[[i]][, p2_9b := part]
 }
 
