@@ -86,7 +86,8 @@ for (p in 1:5) {
 # Young people homeownership
 years <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020) # You can expand this later if
 
-for (i in seq_along(years)) {
+for (p in seq_along(years)) {
+    full_mean[[p]] <- fread(paste0("EFFSpain/datasets/", years[p], "-EFF.microdat.csv"))
     full_mean[[p]][, homeowner := as.factor(np2_1)][, young_homeowner := homeowner == 1 & bage == 1]
     transf <- full_mean[[p]] %>% data.frame()
     df_sv[[p]] <- svydesign(
@@ -94,7 +95,7 @@ for (i in seq_along(years)) {
         data = transf,
         weights = ~ transf$facine3
     )
-    resu <- prop.table(svytable(~young_homeowner, subset(df_sv[[i]], bage == 1)))
+    resu <- prop.table(svytable(~young_homeowner, subset(df_sv[[p]], bage == 1)))
     print(resu)
 }
 
