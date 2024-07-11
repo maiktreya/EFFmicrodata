@@ -101,6 +101,29 @@ for (p in seq_along(years)) {
     resu2[[p]] <- prop.table(svytable(~young_w_homeowner, subset(df_sv[[p]], bage == 1)))[2]
 }
 print(resu2)
+
+
+
+filtered_data <- ecv_mean[[1]]
+
+filtered_data[filtered_data$PL031 %in% c(2, 5), "PL031"] <- 1
+filtered_data[filtered_data$PL031 %in% c(3, 4), "PL031"] <- 2
+filtered_data[filtered_data$PL040 %in% c(2), "PL031"] <- 3
+filtered_data[filtered_data$PL051 %in% c(1, 11, 12, 13, 14, 15, 16, 17, 18, 19), "PL031"] <- 4
+filtered_data[filtered_data$PL031 %in% c(7), "PL031"] <- 5
+filtered_data[filtered_data$PL031 %in% c(6, 8, 9, 10, 11), "PL031"] <- 6
+filtered_data$PL031 <- factor(filtered_data$PL031,
+    levels = c(1, 2, 3, 4, 5, 6),
+    labels = c("worker", "capitalist", "self-employed", "manager", "retired", "inactive")
+)
+
+filtered_data <- filtered_data %>% data.frame()
+filtered_data_sv <- svydesign(
+    ids = ~1,
+    data = filtered_data,
+    weights = ~ filtered_data$PB040
+)
+
 # Share of income of working class rents income
-    ft_ren <- svyby(~HY040N, ~PL031, ec_sv[[1]], svymean, keep.names = F, keep.var = F) # RENTAL ALQ. V
-    ft_hog <- as.data.frame(svyby(~HY040N, ~PL031, ec_sv[[1]], svymean, keep.names = F, keep.var = F))[-1]
+ft_ren <- svyby(~HY040N, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F) # RENTAL ALQ. V
+ft_hog <- as.data.frame(svyby(~HY040N, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F))[-1]
