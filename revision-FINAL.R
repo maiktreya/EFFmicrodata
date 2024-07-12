@@ -14,10 +14,8 @@ for (i in years) {
 
     for (j in 1:5) {
         df <- fread(paste0("EFFSpain/full/", i, "/otras_secciones_", i, "_imp", j, ".csv"))
-        ec <- fread(paste0("EFF-ECVSpain/ECV/output/filtered_data", i, ".csv"))
         selection <- colnames(df)[colnames(df) %like% "p2_9b_"]
         year_data[[j]] <- df[, ..selection]
-        ecv_mean[[j]] <- data.table(ec)
     }
 
     obj_list[[as.character(i)]] <- year_data
@@ -45,18 +43,6 @@ for (z in seq_along(years)) {
 #-----------------------------------------------------------------------------#
 
 
-# HY090G1, PL031
-ec_sv <- list()
-df_sv <- list()
-
-for (p in 1:5) {
-    transf <- ecv_mean[[p]] %>% data.frame()
-    ec_sv[[p]] <- svydesign(
-        ids = ~1,
-        data = transf,
-        weights = ~ transf$PB040
-    )
-}
 
 # P29b % population
 nueva <- list()
@@ -97,14 +83,21 @@ for (p in seq_along(years)) {
         data = transf,
         weights = ~ transf$facine3
     )
-    resu[[p]] <- prop.table(svytable(~young_homeowner, subset(df_sv[[p]], bage == 1)))[2]
-    resu2[[p]] <- prop.table(svytable(~young_w_homeowner, subset(df_sv[[p]], bage == 1)))[2]
+    resu[p] <- prop.table(svytable(~young_homeowner, subset(df_sv[[p]], bage == 1)))[2]
+    resu2[p] <- prop.table(svytable(~young_w_homeowner, subset(df_sv[[p]], bage == 1)))[2]
 }
 print(resu2)
 
 
+ft_hog <- list()
+ft_ren <- list()
+years <- c( 2005, 2008, 2011, 2014, 2017, 2020) # You can expand this later if
+for (p in seq_along(years)) {
 
-filtered_data <- ecv_mean[[1]]
+ec <- fread(paste0("EFF-ECVSpain/ECV/output/filtered_data", years[p], ".csv"))
+ecv_mean[[p]] <- data.table(ec)
+
+filtered_data <- ecv_mean[[p]]
 
 filtered_data[filtered_data$PL031 %in% c(2, 5), "PL031"] <- 1
 filtered_data[filtered_data$PL031 %in% c(3, 4), "PL031"] <- 2
@@ -125,5 +118,6 @@ filtered_data_sv <- svydesign(
 )
 
 # Share of income of working class rents income
-ft_ren <- svyby(~HY040N, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F) # RENTAL ALQ. V
-ft_hog <- as.data.frame(svyby(~HY040N, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F))[-1]
+ft_ren[[p]] <- svyby(~HY040N, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F) # RENTAL ALQ. V
+ft_hog[[p]] <- svyby(~HY040N, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F)
+}
