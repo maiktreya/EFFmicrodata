@@ -33,15 +33,15 @@ filtered_data_sv <- svydesign(
 )
 
 # Share of income of working class rents income
-ft_ren[[p]] <- cbind(svyby(~HY040N, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F), years[p]) # RENTAL ALQ. V
-ft_hog[[p]] <- cbind(svyby(~HY020, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F), years[p])
+ft_ren[[p]] <- cbind(svyby(~HY040N, ~PL031, subset(filtered_data_sv,HY040N>0), svymean, keep.names = F, keep.var = F), years[p]) # RENTAL ALQ. V
+ft_hog[[p]] <- cbind(svyby(~HY020, ~PL031, subset(filtered_data_sv,HY040N>0), svymean, keep.names = F, keep.var = F), years[p])
 ft_ratio[[p]] <- ft_ren[[p]]$statistic / ft_hog[[p]]$statistic
 }
 
 
 # Working class subsample size
 for (z in seq_along(years)) {
-    working_class_size[z] <- nrow(ecv_mean[[z]][PL031 == 1, 1]) 
+    working_class_size[z] <- nrow(ecv_mean[[z]][PL031 == 1, 1])
     sample_size[z] <-  nrow(ecv_mean[[z]][, 1])
     working_class_ratio[z] <- working_class_size[z] / sample_size[z]
 
