@@ -23,7 +23,7 @@ for (p in seq_along(years)) {
         weights = ~ transf$facine3
     )
     y_owner[p] <- prop.table(svytable(~young_homeowner, subset(df_sv[[p]], bage == 1)))[2]
-    y_w_owner[p] <- prop.table(svytable(~young_w_homeowner, subset(df_sv[[p]], bage == 1)))[2]
+    y_w_owner[p] <- prop.table(svytable(~young_w_homeowner, subset(df_sv[[p]], bage == 1 & nsitlabdom ==1)))[2]
 }
 
 
