@@ -57,3 +57,4 @@ print(sample_result_z)
 # rental income for workers
 worker_rental_z  <- cbind(rbindlist(ft_ren), rbindlist(ft_hog))
 print(worker_rental_z)
+fwrite(worker_rental_z, "rental-income.csv")

@@ -4,7 +4,7 @@ library(magrittr)
 library(survey)
 
 
-obj_list <- full_mean <- nueva <-  df_sv <- list()
+obj_list <- full_mean <- nueva <- df_sv <- list()
 years <- c(2008, 2011, 2014, 2017, 2020) # You can expand this later if needed
 refin <- refin_w <- c()
 # for incorporating new variables from
@@ -31,14 +31,18 @@ for (i in seq_along(years)) {
     nueva[[i]] <- obj_list[[i]][[1]]$sum + obj_list[[i]][[2]]$sum + obj_list[[i]][[3]]$sum + obj_list[[i]][[4]]$sum + obj_list[[i]][[5]]$sum
     part <- data.table(nueva[[i]] / 5)
     full_mean[[i]][, p2_9b := part]
+    transf <- full_mean[[i]] %>% data.frame()
+    df_sv[[i]] <- svydesign(
+        ids = ~1,
+        data = transf,
+        weights = ~ transf$facine3
+    )
+    refin[i] <- prop.table(svytable(~p2_9b, df_sv[[i]]))[2] %>% round(3)
+    refin_w[i] <- prop.table(svytable(~p2_9b, subset(df_sv[[i]], nsitlabdom == 1)))[2] %>% round(3)
 }
-transf <- full_mean[[i]] %>% data.frame()
-df_sv[[i]] <- svydesign(
-    ids = ~1,
-    data = transf,
-    weights = ~ transf$facine3
-)
-refin[i] <- prop.table(svytable(~p2_9b, df_sv[[i]]))[2]
-refin_w[i] <- prop.table(svytable(~p2_9b, subset(df_sv[[i]], nsitlabdom == 1)))[2]
+
 
 #------------------EFF REFINANCING RESULTS-----------------------------------------------------------#
+#
+results_refin <- cbind(years, refin, refin_w)
+fwrite(results_refin, "refin.csv")
