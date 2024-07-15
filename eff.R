@@ -48,3 +48,4 @@ fwrite(sample_result_z, "sample.csv")
 homewoner_results <- cbind(years, y_owner, y_w_owner)
 print(homewoner_results)
 fwrite(homewoner_results, "homeowner.csv")
+
