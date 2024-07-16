@@ -4,7 +4,7 @@ library(magrittr)
 library(survey)
 
 
-ft_hog <- ft_ren <- ft_med <- ft_per <- ft_ratio <- ecv_mean <- list()
+ft_hog <- ft_ren <- ft_med_ren <- ft_med_hog <- ft_per <- ecv_mean <- list()
 working_class_size <- sample_size <- working_class_ratio <- c()
 years <- c(2005, 2008, 2011, 2014, 2017, 2020) # You can expand this later if
 for (p in seq_along(years)) {
@@ -37,11 +37,11 @@ for (p in seq_along(years)) {
     )
 
     # Share of income of working class rents income
-    ft_ren[[p]] <- cbind(svyby(~HY040N, ~PL031, subset(filtered_data_sv, HY040N > 0), svymean, keep.names = F, keep.var = F), years[p]) %>% data.table() # RENTAL ALQ. V
-    ft_hog[[p]] <- cbind(svyby(~HY020, ~PL031, subset(filtered_data_sv, HY040N > 0), svymean, keep.names = F, keep.var = F), years[p])[, 2] %>% data.table()
-    ft_per[[p]] <- svyby(~per_ral, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F)[, 2] %>% data.table()
-    ft_med[[p]] <- svyby(~HY040N, ~PL031, subset(filtered_data_sv, HY040N > 0), svyquantile, quantiles = .5)[, 2] %>% data.table()
-    ft_ratio[[p]] <- ft_ren[[p]]$statistic / ft_hog[[p]]$statistic
+    ft_ren[[p]] <- cbind(svyby(~HY040N, ~PL031, subset(filtered_data_sv, HY040N > 0), svymean, keep.names = F, keep.var = F), years[p]) %>% data.table()
+    ft_hog[[p]] <- svyby(~HY020, ~PL031, subset(filtered_data_sv, HY040N > 0), svymean, keep.names = F, keep.var = F) %>% data.table()
+    ft_per[[p]] <- svyby(~per_ral, ~PL031, filtered_data_sv, svymean, keep.names = F, keep.var = F) %>% data.table()
+    ft_med_ren[[p]] <- svyby(~HY040N, ~PL031, subset(filtered_data_sv, HY040N > 0), svyquantile, quantiles = .5) %>% data.table()
+    ft_med_hog[[p]] <- svyby(~HY020, ~PL031, subset(filtered_data_sv, HY040N > 0), svyquantile, quantiles = .5) %>% data.table()
 }
 
 
@@ -52,7 +52,16 @@ sample_result_z <- cbind(years, sample_size, working_class_size, working_class_r
 print(sample_result_z)
 
 # rental income for workers
-worker_rental_z <- cbind(rbindlist(ft_ren), rbindlist(ft_med), rbindlist(ft_per), rbindlist(ft_hog))
-colnames(worker_rental_z) <- c("class", "mean", "median", "%", "year", "renta")
+worker_rental_z <- cbind(
+    rbindlist(ft_ren),
+    rbindlist(ft_med_ren)[, 2],
+    rbindlist(ft_per)[, 2],
+    rbindlist(ft_hog)[, 2],
+    rbindlist(ft_med_hog)[, 2]
+)
+colnames(worker_rental_z) <- c("class", "mean", "median", "%", "year", "renta_hogar_media", "renta_hogar_mediana")
+worker_rental_z[, ratio_medias := mean / renta_hogar_media][, ratio_medianas := median / renta_hogar_mediana]
 print(worker_rental_z)
+
+# export results
 fwrite(worker_rental_z, "rental-income-ECV-updated.csv")
