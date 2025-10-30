@@ -24,11 +24,11 @@ full_mean <- list()
 nueva <- list()
 df_sv <- list()
 y_working_class_size <- y_working_class_ratio <- y_w_owner <- y_owner <- working_class_size <- sample_size <- working_class_ratio <- c()
-years <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020) # You can expand this later if
+years <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020, 2022) # You can expand this later if
 pensions_age <- pensions_age_class <- med_pensions_age <- med_pensions_age_class <- list()
 # Young people homeownership
 for (p in seq_along(years)) {
-    full_mean[[p]] <- fread(paste0("EFFSpain/datasets/", years[p], "-EFF.microdat.csv"))
+    full_mean[[p]] <- fread(paste0("datasets/eff/", years[p], "-EFF.microdat.csv"))
     full_mean[[p]][, homeowner := as.factor(np2_1)]
     full_mean[[p]][, young_homeowner := 0][homeowner == 1 & bage == 1, young_homeowner := 1]
     full_mean[[p]][, young_w_homeowner := 0][young_homeowner == 1 & nsitlabdom == 1, young_w_homeowner := 1]

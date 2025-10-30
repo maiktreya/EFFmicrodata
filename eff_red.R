@@ -5,7 +5,7 @@ library(survey)
 
 
 obj_list <- full_mean <- nueva <- df_sv <- list()
-years <- c(2008, 2011, 2014, 2017, 2020) # You can expand this later if needed
+years <- c(2008, 2011, 2014, 2017, 2020, 2022) # You can expand this later if needed
 refin <- refin_w <- c()
 # for incorporating new variables from
 for (i in years) {
