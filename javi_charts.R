@@ -43,3 +43,7 @@ mean(eff$p1_2d_1) %>% print()
 # 4. Combine and display the final results in a table
 results <- data.table(year = period, mean_income = mean_inc_c, median_income = median_inc_c)
 print(results)
+
+
+
+#
