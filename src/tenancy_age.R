@@ -9,6 +9,7 @@ library(survey)
 
 # 1. Define the survey years to analyze (excluding 2022, which has a different structure)
 period <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020, 2022)
+dummy_age <- c(24, 30, 36, 42, 48, 54, 60, 66, 72, 78)
 
 # 2. Initialize vectors to store the results
 summary_table <- data.table()
@@ -24,6 +25,17 @@ for (year in period) {
     # Ensure correct data types for survey variables
     eff[, facine3 := as.numeric(facine3)]
     eff[, renthog := as.numeric(renthog)]
+
+    eff[, p1_2d_1 := NA]
+    eff[, p1_2b_1 := as.numeric(p1_2b_1)][p1_2b_1 %in% c(1946:1955), p1_2d_1 := 48]
+    eff[p1_2b_1 %in% c(1946:1955), p1_2d_1 := 48]
+    eff[p1_2b_1 %in% c(1946:1955), p1_2d_1 := 48]
+    eff[p1_2b_1 %in% c(1946:1955), p1_2d_1 := 48]
+    eff[p1_2b_1 %in% c(1946:1955), p1_2d_1 := 48]
+
+
+
+
 
     # Define the survey design for the year
     design <- svydesign(ids = ~1, weights = ~facine3, data = eff)

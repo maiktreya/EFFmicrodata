@@ -1,136 +1,63 @@
-# README — EFF 2022 Microdata Processing and Analysis
+**EFF Microdata: ETL + Analysis (2002–2022)**
 
-## 1. Overview and Metadata Context
+This repo contains a minimal, fast R pipeline to prepare and analyze the Spanish household wealth survey (EFF) across multiple waves. It focuses on stacking the 5 imputations per wave, exporting ready‑to‑use microdata, and providing lightweight examples for weighted analysis.
 
-This project works with the **Encuesta Financiera de las Familias (EFF) 2022**,
-Spain’s official household wealth survey conducted by the **Banco de España**.
+**Stack:** R with `data.table`, `haven`, `survey` (+ optional `mitools`).
 
-Each wave of the EFF provides five **multiple-imputation datasets**, released in three main sections:
-
-| Section             | Description                                                                             | File pattern                                            | Identifier(s) |
-| ------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------- |
-| **databol**         | Core household-level data: wealth, debt, income, housing, reference person demographics | `databol1.dta` – `databol5.dta`                         | `h_2022`      |
-| **otras_secciones** | Other sections of the questionnaire: socio-demographics, employment, financial products | `otras_secciones_imp1.dta` – `otras_secciones_imp5.dta` | `h_2022`      |
-| **seccion6**        | Section 6, household expenditures and related details                                   | `seccion6_imp1.dta` – `seccion6_imp5.dta`               | `h_2022`      |
-
-**Key identifiers and weights:**
-
-| Variable          | Meaning                                               |
-| ----------------- | ----------------------------------------------------- |
-| `h_2022`          | Unique household identifier across all sections       |
-| `facine3`         | Household sampling weight                             |
-| `imputation`      | Added manually (1–5) to track each imputed dataset    |
-| `renthog21_eur22` | Total household income (2021 euros, adjusted to 2022) |
-
-All datasets share the same number of imputations (5), where each imputation represents a *plausible version* of the complete dataset under multiple imputation procedures.
+**Data location:** Place official EFF files locally under `datasets/full/<WAVE>/` (e.g., `datasets/full/EFF_2022/`). The repo already includes example outputs under `datasets/eff/` for 2002–2022.
 
 ---
 
-## 2. Data Wrangling and Merge Strategy
+**Repository Layout**
 
-The workflow is intentionally minimal and high-performance, relying solely on **`data.table`** and **`haven`**.
-
-### 🔹 Step 1. Read and combine imputations
-
-Each `.dta` file is read using `haven::read_dta()`.
-The five imputations per section are stacked with `rbindlist()` while adding an `imputation` index.
-
-```r
-load_imp <- function(fmt, i) as.data.table(read_dta(sprintf(fmt, i)))[, imputation := i]
-```
-
-### 🔹 Step 2. Merge all sections
-
-All three sections are merged sequentially using the household identifier `h_2022` and the imputation index:
-
-```r
-eff_2022 <- merge(databol, otras, by = c("h_2022", "imputation"), all.x = TRUE)
-eff_2022 <- merge(eff_2022, sec6,  by = c("h_2022", "imputation"), all.x = TRUE)
-```
-
-Only the household weights `facine3` from the `databol` section are retained to avoid duplicates.
-
-### 🔹 Step 3. Export compressed output
-
-The combined dataset is exported as a compressed CSV:
-
-```r
-fwrite(eff_2022, "datasets/eff/2022-EFF.microdat.gz", compress = "gzip")
-```
-
-This produces a single file roughly 10–20× smaller than the uncompressed version,
-and it can be read directly with `fread()`.
+- `ELT/`
+  - `full_wave_join_dta.R` — Merge 5 imputations from the original Stata `.dta` files into a single stacked microdata file for the wave, exporting `datasets/eff/<year>-EFF.microdat.gz`.
+  - `full_wave_join_csv.R` — Same idea when sources are CSVs (paths are configurable at the top of the script).
+  - `create_mean_imputation.R` — Convenience script to build a single “mean‑imputed” flat file per wave at `datasets/eff/<year>-EFF.microdat.csv`. Useful for quick charts; not a substitute for Rubin pooling in formal inference.
+- `datasets/`
+  - `full/` — Raw official microdata by wave (e.g., `EFF_2022/databol*.dta`, `otras_secciones_imp*.dta`, `seccion6_imp*.dta`).
+  - `eff/` — Ready‑to‑use outputs per wave: both stacked `.gz` and mean‑imputed `.csv` for many years (2002–2022).
+- `examples/`
+  - `test_survey.R` — Minimal example: weighted mean/median using the 5 imputations (2022).
+  - `analyze_yearly_data.R` — Loops over years using the mean‑imputed `.csv` files to compile simple indicators.
+- `src/`
+  - `wealth_age.R`, `tenancy_age.R` — Small analysis snippets built on the prepared files.
+- `doc/` — Official documentation: user guide, questionnaire, and annexes for EFF 2022.
+- `out/` — Scratch folder for your tables/figures (ignored by git).
 
 ---
 
-## 3. Robust Estimation with Multiple Imputation and Survey Weights
+**Quick Start**
 
-The **EFF** data require two types of correction for valid inference:
-
-1. **Survey design weights (`facine3`)** to ensure representativeness.
-2. **Multiple imputations** to handle missingness in key variables.
-
-The recommended approach uses the **`survey`** package.
-Each imputation is treated as a separate design, and statistics are computed independently.
-
-### Example: Weighted household income estimation
-
-```r
-library(data.table)
-library(survey)
-
-eff <- fread("datasets/eff/2022-EFF.microdat.gz")
-eff[, facine3 := as.numeric(facine3)]
-eff[, renthog21_eur22 := as.numeric(renthog21_eur22)]
-
-designs <- lapply(sort(unique(eff$imputation)), function(i)
-  svydesign(ids = ~1, weights = ~facine3, data = eff[imputation == i])
-)
-
-mean_inc <- sapply(designs, \(d) coef(svymean(~renthog21_eur22, d, na.rm = TRUE)))
-median_inc <- sapply(designs, \(d) {
-  as.numeric(svyquantile(~renthog21_eur22, d, quantiles = 0.5, ci = FALSE, na.rm = TRUE))
-})
-```
-
-This produces one estimate per imputation.
-Simple teaching examples can average them directly:
-
-```r
-mean(mean_inc)      # naïve pooled mean
-mean(median_inc)    # naïve pooled median
-```
-
-For rigorous analyses, use **Rubin’s pooling rules** via `mitools::MIcombine()`:
-
-```r
-library(mitools)
-MIcombine(results = mean_inc)
-```
+- Install R packages: `data.table`, `haven`, `survey` (optional: `mitools`, `magrittr`).
+- Put raw files for the target wave under `datasets/full/<WAVE>/` (see `datasets/full/EFF_2022/` as a reference).
+- Build the stacked file from `.dta` sources: run `ELT/full_wave_join_dta.R`.
+  - Output: `datasets/eff/<year>-EFF.microdat.gz` (directly readable by `data.table::fread`).
+- (Optional) Create the quick “mean‑imputed” flat file: run `ELT/create_mean_imputation.R` after setting `year`.
+  - Output: `datasets/eff/<year>-EFF.microdat.csv`.
+- Run examples:
+  - Weighted analysis per imputation: `examples/test_survey.R` (uses `.gz`).
+  - Yearly loop for quick indicators: `examples/analyze_yearly_data.R` (uses `.csv`).
 
 ---
 
-## 4. Summary
+**Key Variables**
 
-| Component                             | Description                                                                 |
-| ------------------------------------- | --------------------------------------------------------------------------- |
-| **full_wave_join.R**                  | Reads, merges, and exports the EFF 2022 microdata (5 imputations × 3 files) |
-| **test_survey.R**                     | Demonstrates robust estimation with sampling weights using `survey`         |
-| **datasets/eff/2022-EFF.microdat.gz** | Final compressed dataset (ready for analysis)                               |
-| **facine3**                           | Must always be used as survey weight                                        |
-| **renthog21_eur22**                   | Recommended income variable for cross-sectional estimation                  |
+- Household id: `h_<year>` (e.g., `h_2022`) — join key across sections and imputations.
+- Survey weight: `facine3` — must be used in any design‑based estimate.
+- Income examples: `renthog21_eur22` (2022), `renthog` (earlier waves).
+- Imputation index: `imputation` (1–5) — added during stacking.
 
 ---
 
-### ✳️ Notes
+**Notes**
 
-* `fread()` can read `.gz` files directly, so compression is transparent.
-* The merge process can safely handle additional variables or future waves (just update file paths).
-* Always check `summary(eff$facine3)` before computing weighted statistics — missing or zero weights will bias results.
+- `fread()` supports `.gz` natively; no manual decompression needed.
+- When merging sections, keep `facine3` only once to avoid duplicates (handled in `ELT/full_wave_join_*`).
+- For inference, compute estimates per imputation and pool (e.g., `mitools::MIcombine()`), rather than using the “mean‑imputed” files.
 
 ---
 
-**Maintainer:** Miguel
-**Language:** R (data.table + survey + haven)
-**Purpose:** Efficient, reproducible, and pedagogically clean pipeline for handling the Spanish EFF 2022 microdata.
-**License:** GPL3
+Maintainer: Miguel
+Language: R
+License: GPL‑3
