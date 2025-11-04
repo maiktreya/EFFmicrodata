@@ -4,6 +4,7 @@
 # to calculate and compile key income statistics for each survey year.
 
 library(data.table)
+library(magrittr)
 library(survey)
 
 # 1. Define the survey years to analyze (excluding 2022, which has a different structure)
@@ -36,6 +37,8 @@ for (year in period) {
     mean_inc_c <- c(mean_inc_c, mean_inc)
     median_inc_c <- c(median_inc_c, median_inc)
 }
+mean(eff$p1_2b_1) %>% print()
+mean(eff$p1_2d_1) %>% print()
 
 # 4. Combine and display the final results in a table
 results <- data.table(year = period, mean_income = mean_inc_c, median_income = median_inc_c)

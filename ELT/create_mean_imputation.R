@@ -9,15 +9,19 @@
 # (e.g., using the `survey` and `mitools` packages) should be used.
 
 library(data.table)
+rm(list = ls())
+gc(verbose = TRUE, reset = TRUE)
+
+year <- 2020
 
 # 1. Load the combined microdata with all 5 imputations
-eff_stacked <- fread("datasets/eff/2022-EFF.microdat.gz")
+eff_stacked <- fread(paste0("datasets/eff/", year, "-EFF.microdat.csv.gz"))
 
 # 2. Identify numeric and non-numeric columns to process
 #    - `id_vars`: Columns to group by (household identifier).
 #    - `num_vars`: Numeric columns to be averaged.
 #    - `char_vars`: Character columns to keep (taking the first value).
-id_vars <- "h_2022"
+id_vars <- paste0("h_", year)
 all_vars <- names(eff_stacked)
 num_vars <- all_vars[sapply(eff_stacked, is.numeric) & !(all_vars %in% c(id_vars, "imputation"))]
 char_vars <- all_vars[sapply(eff_stacked, is.character) & !(all_vars %in% id_vars)]
@@ -28,9 +32,9 @@ eff_mean_imputed <- eff_stacked[,
         lapply(.SD[, ..num_vars], mean, na.rm = TRUE), # Average numeric vars
         lapply(.SD[, ..char_vars], first)
     ), # Keep first char var
-    by = h_2022
+    by = get(id_vars)
 ]
 
 # 4. Export the result to a new CSV file
-fwrite(eff_mean_imputed, "datasets/eff/2022-EFF.microdat.csv")
-message("Successfully created mean-imputed dataset at: datasets/eff/2022-EFF.mean_imputed.csv")
+fwrite(eff_mean_imputed, paste0("datasets/eff/", year, "-EFF.microdat.csv"))
+message(paste0("Successfully created mean-imputed dataset at: datasets/eff/", year, "-EFF.mean_imputed.csv"))
