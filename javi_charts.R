@@ -11,8 +11,7 @@ library(survey)
 period <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020, 2022)
 
 # 2. Initialize vectors to store the results
-mean_inc_c <- c()
-median_inc_c <- c()
+summary_table <- data.table()
 
 # 3. Loop through each year, load the data, and perform calculations
 for (year in period) {
@@ -30,20 +29,12 @@ for (year in period) {
     design <- svydesign(ids = ~1, weights = ~facine3, data = eff)
 
     # Calculate weighted mean and median income
-    mean_inc <- coef(svymean(~renthog, design, na.rm = TRUE))
-    median_inc <- svyquantile(~renthog, design, quantiles = 0.5, ci = FALSE, na.rm = TRUE)[[1]][1]
+    mean_inc <- coef(svyby(~riquezanet, ~bage, design, svymean, na.rm = TRUE))
 
-    # Append results to the storage vectors
-    mean_inc_c <- c(mean_inc_c, mean_inc)
-    median_inc_c <- c(median_inc_c, median_inc)
+    summary_table <- cbind(summary_table, c(year, mean_inc))
 }
-mean(eff$p1_2b_1) %>% print()
-mean(eff$p1_2d_1) %>% print()
+# year born mean(eff$p1_2b_1) %>% print()
+# age mean(eff$p1_2d_1) %>% print()
 
 # 4. Combine and display the final results in a table
-results <- data.table(year = period, mean_income = mean_inc_c, median_income = median_inc_c)
-print(results)
-
-
-
-#
+print(summary_table)
