@@ -19,7 +19,7 @@ mean_inc <- sapply(designs, \(d) coef(svymean(~renthog21_eur22, d, na.rm = TRUE)
 
 median_inc <- sapply(designs, \(d) {
     q <- svyquantile(~renthog21_eur22, d, quantiles = 0.5, ci = FALSE, na.rm = TRUE)
-    as.numeric(q) # ahora s<U+00ED>: extrae el n<U+00FA>mero del objeto lista
+    as.numeric(q) # ahora: extrae el n<U+00FA>mero del objeto lista
 })
 
 # 5) mostrar resultados
