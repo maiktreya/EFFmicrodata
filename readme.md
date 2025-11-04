@@ -1,6 +1,21 @@
 **EFF Microdata: ETL + Analysis (2002–2022)**
 
+Normalize • Minimize • Unify
+
+An attempt to normalize, minimize, and unify the fragmentary and tedious base files provided by Banco de España for working with the Encuesta Financiera de las Familias (EFF) microdata.
+
 This repo contains a minimal, fast R pipeline to prepare and analyze the Spanish household wealth survey (EFF) across multiple waves. It focuses on stacking the 5 imputations per wave, exporting ready‑to‑use microdata, and providing lightweight examples for weighted analysis.
+
+Folder Structure
+
+- `ELT/` — scripts to ingest and merge raw EFF sections (by wave)
+- `datasets/`
+  - `full/` — raw official inputs by wave (e.g., `EFF_2022/`)
+  - `eff/` — unified outputs (`<year>-EFF.microdat.gz` and `.csv`)
+- `examples/` — quick survey‑weighted demos
+- `src/` — small analyses (cohort/age × wealth/tenure)
+- `out/` — generated tables and figures
+- `doc/` — official documentation from BDE
 
 **Stack:** R with `data.table`, `haven`, `survey` (+ optional `mitools`).
 
@@ -38,6 +53,28 @@ This repo contains a minimal, fast R pipeline to prepare and analyze the Spanish
 - Run examples:
   - Weighted analysis per imputation: `examples/test_survey.R` (uses `.gz`).
   - Yearly loop for quick indicators: `examples/analyze_yearly_data.R` (uses `.csv`).
+
+---
+
+**Analyses (src/) and Outputs (out/)**
+
+- `src/wealth_cohort.R` → `out/wealth_cohort.csv`
+  - Weighted mean net wealth by cohort and aligned cohort-age (uses mean‑imputed `.csv`).
+- `src/tenancy_cohort.R` → `out/tenancy_cohort.csv`
+  - Homeownership rate (`np2_1`) by cohort with the same cohort‑age alignment.
+- `src/wealth_age.R` → `out/wealth_age.csv`
+  - Weighted mean net wealth by respondent age (`bage`) for each year.
+- `src/tenancy_age.R` → optional variant for tenure by age.
+
+Run any analysis with Rscript, e.g.:
+
+```
+Rscript src/wealth_cohort.R
+Rscript src/tenancy_cohort.R
+Rscript src/wealth_age.R
+```
+
+All outputs are written under `out/` and can be joined or charted as needed.
 
 ---
 
