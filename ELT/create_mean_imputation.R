@@ -12,7 +12,7 @@ library(data.table)
 rm(list = ls())
 gc(verbose = TRUE, reset = TRUE)
 
-year <- 2020
+year <- 2022
 
 # 1. Load the combined microdata with all 5 imputations
 eff_stacked <- fread(paste0("datasets/eff/", year, "-EFF.microdat.csv.gz"))
