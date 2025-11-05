@@ -1,4 +1,4 @@
-**EFF Microdata: ETL + Analysis (2002–2022)**
+# EFF Microdata: ETL + Analysis (2002–2022)
 
 Normalize • Minimize • Unify
 
@@ -6,24 +6,9 @@ An attempt to normalize, minimize, and unify the fragmentary and tedious base fi
 
 This repo contains a minimal, fast R pipeline to prepare and analyze the Spanish household wealth survey (EFF) across multiple waves. It focuses on stacking the 5 imputations per wave, exporting ready‑to‑use microdata, and providing lightweight examples for weighted analysis.
 
-Folder Structure
-
-- `ELT/` — scripts to ingest and merge raw EFF sections (by wave)
-- `datasets/`
-  - `full/` — raw official inputs by wave (e.g., `EFF_2022/`)
-  - `eff/` — unified outputs (`<year>-EFF.microdat.gz` and `.csv`)
-- `examples/` — quick survey‑weighted demos
-- `src/` — small analyses (cohort/age × wealth/tenure)
-- `out/` — generated tables and figures
-- `doc/` — official documentation from BDE
-
-**Stack:** R with `data.table`, `haven`, `survey` (+ optional `mitools`).
-
-**Data location:** Place official EFF files locally under `datasets/full/<WAVE>/` (e.g., `datasets/full/EFF_2022/`). The repo already includes example outputs under `datasets/eff/` for 2002–2022.
-
 ---
 
-**Repository Layout**
+## Repository Layout
 
 - `ELT/`
   - `full_wave_join_dta.R` — Merge 5 imputations from the original Stata `.dta` files into a single stacked microdata file for the wave, exporting `datasets/eff/<year>-EFF.microdat.gz`.
@@ -42,7 +27,7 @@ Folder Structure
 
 ---
 
-**Quick Start**
+## Quick Start
 
 - Install R packages: `data.table`, `haven`, `survey` (optional: `mitools`, `magrittr`).
 - Put raw files for the target wave under `datasets/full/<WAVE>/` (see `datasets/full/EFF_2022/` as a reference).
@@ -56,7 +41,7 @@ Folder Structure
 
 ---
 
-**Analyses (src/) and Outputs (out/)**
+## Analyses (src/) and Outputs (out/)
 
 - `src/wealth_cohort.R` → `out/wealth_cohort.csv`
   - Weighted mean net wealth by cohort and aligned cohort-age (uses mean‑imputed `.csv`).
@@ -78,16 +63,40 @@ All outputs are written under `out/` and can be joined or charted as needed.
 
 ---
 
-**Key Variables**
+## Key Variables
 
 - Household id: `h_<year>` (e.g., `h_2022`) — join key across sections and imputations.
 - Survey weight: `facine3` — must be used in any design‑based estimate.
 - Income examples: `renthog21_eur22` (2022), `renthog` (earlier waves).
 - Imputation index: `imputation` (1–5) — added during stacking.
+- % HOMEOWNERSHIP (P2_35_1)
+- N OF PROPS BY AGE AND CLASS (p2_33)
+- MULTIPROP (s6_owner)
+- RENTAL INCOME EFF (p7_2)
+- PENSION FUNDS ASSETS (VALOR)
+- FINANCIAL ASSETS (riquezafin)
+- FINANCIAL ASSETS NO SAVINGS (riquezafin)
+- MAIN RESIDENCE DEBT (dvivpral)
+- DEBT RATIO (ratio_deuda)
+- TOTAL DEBT (vdeuda)
+- OVERDB (overburden)
+- NET WORTH (riquezanet)
+- OTHER REAL ASSETS DEBT (deuoprop)
+- MAIN RESIDENCE VALUE (np2)
+- OTHER REAL ASSETS VALUE (otraspr)
+- HOUSING ASSETS (otraspr + np2)
+- INHERITANCE (P2_2)
+- MORTAGED (dvivpral)
+- COMPONENTES OF FINANCIAL ASSETS
+- "p4_15" -> ACCIONES COTIZADAS EN BOLSA
+- "p4_24" -> ACCIONES NO COTIZADAS EN BOLSA
+- "p4_35" -> VALORES RENTA FIJA
+- "allf" -> FONDOS DE INVERSION
+- "p4_43" -> CARTERAS GESTIONADAS (SOLO 2017)
 
 ---
 
-**Notes**
+## Notes
 
 - `fread()` supports `.gz` natively; no manual decompression needed.
 - When merging sections, keep `facine3` only once to avoid duplicates (handled in `ELT/full_wave_join_*`).
