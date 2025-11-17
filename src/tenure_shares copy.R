@@ -14,8 +14,6 @@
 
 suppressPackageStartupMessages({
     library(data.table)
-    library(survey)
-    library(magrittr)
 })
 
 # Waves included
@@ -23,9 +21,7 @@ period <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020, 2022)
 
 # Accumulator
 summary_table <- data.table()
-year_shares <- list()
 
-# Loop
 for (year in period) {
     message(sprintf("Processing year: %d", year))
 
@@ -49,24 +45,35 @@ for (year in period) {
 
     # Indicators
     # Any property recorded if p2_33 > 0 (covers owners not living in main home)
-    eff[is.na(eff)] <- 0
-    eff[, nprops := np2_1 + p2_33]
-    eff[, nproperties := 0]
-    eff[nprops == 0, nproperties := 0]
-    eff[nprops == 1, nproperties := 1]
-    eff[nprops >= 2, nproperties := 2]
-    eff[, nproperties := factor(nproperties, levels = c(0, 1, 2), labels = c("No assets", "Homeowner", "2+"))]
+    eff[, any_property := 0]
+    eff[, homeowner := 0]
+    eff[, two_plus := 0]
+    eff[, no_housing_assets := 0]
+    eff[np2_1 == 1 | p2_33 > 0, any_property := 1]
+    # Homeowner (main residence) per provided dummy
+    eff[np2_1 == 1 & p2_33 == 0, homeowner := 1]
+    # Two or more properties
+    eff[np2_1 == 1 & p2_33 > 0, two_plus := 1]
+    # No housing assets: not homeowner and no other properties
+    eff[!homeowner & !any_property, no_housing_assets := 1]
 
+    # Weighted shares
+    share_no_assets <- eff[no_housing_assets == TRUE, sum(facine3, na.rm = TRUE)] / total_w
+    share_homeowner <- eff[homeowner == TRUE, sum(facine3, na.rm = TRUE)] / total_w
+    share_two_plus <- eff[two_plus == TRUE, sum(facine3, na.rm = TRUE)] / total_w
 
-
-    design <- svydesign(ids = ~1, weights = ~facine3, data = eff)
-    i <- as.character(year)
-    year_shares[[i]] <- svytable(~nproperties, design = design) %>%
-        prop.table() %>%
-        as.data.table()
+    summary_table <- rbindlist(list(
+        summary_table,
+        data.table(
+            year = year,
+            share_no_housing_assets = share_no_assets,
+            share_homeowners = share_homeowner,
+            share_two_or_more_props = share_two_plus
+        )
+    ), use.names = TRUE)
 }
+
 # Output
-summary_table <- rbindlist(year_shares, use.names = TRUE)
 if (!dir.exists("out")) dir.create("out", recursive = TRUE)
 fwrite(summary_table, "out/tenure_shares.csv")
 print(summary_table)
