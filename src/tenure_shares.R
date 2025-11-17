@@ -22,8 +22,7 @@ suppressPackageStartupMessages({
 period <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020, 2022)
 
 # Accumulator
-summary_table <- data.table()
-year_shares <- list()
+year_shares <- year_mean_props <- year_otherprops <- list()
 
 # Loop
 for (year in period) {
@@ -56,6 +55,8 @@ for (year in period) {
     eff[nprops == 1, nproperties := 1]
     eff[nprops >= 2, nproperties := 2]
     eff[, nproperties := factor(nproperties, levels = c(0, 1, 2), labels = c("No assets", "Homeowner", "2+"))]
+    eff[, otherprops := 0][p2_33 > 0, otherprops := 1]
+    eff[, otherprops := factor(otherprops)]
 
 
 
@@ -64,9 +65,21 @@ for (year in period) {
     year_shares[[i]] <- svytable(~nproperties, design = design) %>%
         prop.table() %>%
         as.data.table()
+    year_mean_props[[i]] <- svyby(~nprops, ~bage, design, svymean) %>%
+        as.data.table()
+    year_otherprops[[i]] <- svyby(~otherprops, ~bage, design, svymean) %>%
+        as.data.table()
 }
+
 # Output
-summary_table <- rbindlist(year_shares, use.names = TRUE)
-if (!dir.exists("out")) dir.create("out", recursive = TRUE)
+summary_table_shares <- rbindlist(year_shares, use.names = TRUE)
+summary_table_mean_props <- rbindlist(year_mean_props, use.names = TRUE)
+summary_table_otherprops <- rbindlist(year_otherprops, use.names = TRUE)
+
 fwrite(summary_table, "out/tenure_shares.csv")
+fwrite(summary_table_mean_props, "out/new/tenure_mean_props.csv")
+fwrite(summary_table_otherprops, "out/new/tenure_otherprops.csv")
+
 print(summary_table)
+print(summary_table_mean_props)
+print(summary_table_otherprops)
