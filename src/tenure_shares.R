@@ -23,7 +23,7 @@ period <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020, 2022)
 
 # Accumulator
 year_shares <- year_mean_props <- year_otherprops <- list()
-
+summary_table <- data.table()
 # Loop
 for (year in period) {
     message(sprintf("Processing year: %d", year))
@@ -73,11 +73,18 @@ summary_table_shares <- rbindlist(year_shares, use.names = TRUE)
 summary_table_mean_props <- rbindlist(year_mean_props, use.names = TRUE)
 summary_table_otherprops <- rbindlist(year_otherprops, use.names = TRUE)
 
+# wave identification
+summary_table_shares <- cbind(wave = rep(period, each = 3), summary_table_shares)
+summary_table_mean_props <- cbind(wave = rep(period, each = 6), summary_table_mean_props)
+summary_table_otherprops <- cbind(wave = rep(period, each = 6), summary_table_otherprops)
+
 # Export
-fwrite(summary_table, "out/tenure_shares.csv")
+fwrite(summary_table_shares, "out/new/tenure_shares.csv")
 fwrite(summary_table_mean_props, "out/new/tenure_mean_props.csv")
 fwrite(summary_table_otherprops, "out/new/tenure_otherprops.csv")
+
 
 print(summary_table)
 print(summary_table_mean_props)
 print(summary_table_otherprops)
+rep(period, each = 3)
