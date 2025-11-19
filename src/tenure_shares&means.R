@@ -56,7 +56,14 @@ for (year in period) {
     eff[, otherprops := 0][p2_33 > 0, otherprops := 1]
     eff[, nproperties := factor(nproperties, levels = c(0, 1, 2), labels = c("No assets", "Homeowner", "2+"))]
     eff[, otherprops := factor(otherprops, levels = c(0, 1), labels = c("No assets", "Other than main"))]
-
+    eff[, bage := factor(bage, levels = c(1:6), labels = c(
+        "Menor de 35 anos",
+        "Entre 35 y 44 anos",
+        "Entre 45 y 54 anos",
+        "Entre 55 y 64 anos",
+        "Entre 65 y 74 anos",
+        "Mayor de 74 anos"
+    ))]
 
     # survey design definition
     design <- svydesign(ids = ~1, weights = ~facine3, data = eff)
