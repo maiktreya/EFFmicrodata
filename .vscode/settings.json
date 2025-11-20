@@ -1,0 +1,18 @@
+{
+    // Path to radian (Python ARM64)
+    "r.rterm.windows": "C:\\Users\\garci\\AppData\\Local\\Programs\\Python\\Python313-arm64\\Scripts\\radian.exe",
+
+    // Path to your ARM64 R executable
+    "r.rpath.windows": "C:\\Program Files\\R-aarch64\\R-4.5.2\\bin\\R.exe",
+
+    // Options passed to R
+    "r.rterm.option": [
+        "--no-save",
+        "--no-restore"
+    ],
+
+    // Environment variables for VS Code terminal
+    "terminal.integrated.env.windows": {
+        "R_HOME": "C:/Program Files/R-aarch64/R-4.5.2"
+    }
+}
