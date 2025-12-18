@@ -1,6 +1,3 @@
-#!/usr/bin/env Rscript
-# wealth_age_shares.R
-#
 # Compute, for each survey wave, the share of total population and the share of
 # total net wealth held by age groups 1<U+2013>6 in variable `bage`.
 
