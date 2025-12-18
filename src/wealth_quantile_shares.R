@@ -1,5 +1,5 @@
 # Compute, for each survey wave, the share of total population and the share of
-# total net wealth held by age groups 1<U+2013>6 in variable `bage`.
+# total net wealth held by selected quantiles groups
 
 suppressPackageStartupMessages({
     library(data.table)
@@ -32,7 +32,7 @@ for (year in period) {
     # Compute shares
     obj1 <- svytotal(~riquezanet, dt, na.rm = TRUE)
     obj2 <- svytotal(~riquezanet, subset(dt, riquezanet < pre["0.5"]), na.rm = TRUE)
-    obj3 <- svytotal(~riquezanet, subset(dt, riquezanet > pre["0.99"]), na.rm = TRUE)
+    obj3 <- svytotal(~riquezanet, subset(dt, riquezanet >= pre["0.99"]), na.rm = TRUE)
 
     # Accumulate
     obj[[year]] <- data.table(share.low50 = obj2[1] / obj1[1], share.top99 = obj3[1] / obj1[1])
