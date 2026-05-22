@@ -25,6 +25,8 @@ for (year in period) {
     # Ensure correct data types for survey variables
     eff[, facine3 := as.numeric(facine3)]
     eff[, renthog := as.numeric(renthog)]
+    eff[, riquezanet := as.numeric(riquezanet)]
+
 
     # Define the survey design for the year
     design <- svydesign(ids = ~1, weights = ~facine3, data = eff)
