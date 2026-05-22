@@ -43,7 +43,7 @@ for (year in period) {
     # Define the survey design for the year
     design <- svydesign(ids = ~1, weights = ~facine3, data = eff)
 
-    yearly_stats <- svyby(~riquezanet, ~regten+bage, design, svymean, na.rm = TRUE) %>%
+    yearly_stats <- svyby(~renthog, ~regten+bage, design, svymean, na.rm = TRUE) %>%
         as.data.table()
 
     # Add year column and rename for clarity
