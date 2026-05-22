@@ -32,6 +32,6 @@ for (year in period) {
     obj <- c(obj, quant[[1]])
 }
 
-names(obj) <- period
-
-rental_grp <- diff(log(obj))
+# Print results
+results <- data.table(period = c(2002, 2005, 2008, 2011, 2014, 2017, 2020, 2022), rental_p = obj, rental_grp = c(NA, diff(log(obj))))
+print(results)
