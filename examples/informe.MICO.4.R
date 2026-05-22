@@ -43,12 +43,12 @@ for (year in period) {
     # Define the survey design for the year
     design <- svydesign(ids = ~1, weights = ~facine3, data = eff)
 
-    yearly_stats <- svyby(~riquezainmo, ~regten, design, svymean, na.rm = TRUE) %>%
+    yearly_stats <- svyby(~riquezanet, ~regten+bage, design, svymean, na.rm = TRUE) %>%
         as.data.table()
 
     # Add year column and rename for clarity
     yearly_stats[, year := year]
-    setnames(yearly_stats, old = c("riquezainmo", "regten"), new = c("age_group", "mean_wealth"))
+    setnames(yearly_stats, new = c("year", "age_group", "mean_wealth", "regten", "int"))
 
     # Store the results for this year
     results_list[[as.character(year)]] <- yearly_stats[, .(year, age_group, mean_wealth)]
