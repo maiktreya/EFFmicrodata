@@ -26,6 +26,8 @@ for (year in period) {
     eff[, facine3 := as.numeric(facine3)]
     eff[, renthog := as.numeric(renthog)]
     eff[, riquezanet := as.numeric(riquezanet)]
+    eff[, riquezainmo := as.numeric(p2_5) + as.numeric(otraspr)][, riquezainmo := as.numeric(riquezainmo)]
+    eff[, regten := as.numeric(p2_1)]
 
 
     # Define the survey design for the year
