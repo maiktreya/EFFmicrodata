@@ -10,9 +10,8 @@ library(survey)
 # 1. Define the survey years to analyze (excluding 2022, which has a different structure)
 period <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020, 2022)
 
-# 2. Initialize vectors to store the results
-mean_inc_c <- c()
-median_inc_c <- c()
+# 2. Initialize a list to store the results
+results_list <- list()
 
 # 3. Loop through each year, load the data, and perform calculations
 for (year in period) {
@@ -27,23 +26,34 @@ for (year in period) {
     eff[, renthog := as.numeric(renthog)]
     eff[, riquezanet := as.numeric(riquezanet)]
     eff[, riquezainmo := as.numeric(p2_5) + as.numeric(otraspr)][, riquezainmo := as.numeric(riquezainmo)]
-    eff[, regten := as.numeric(p2_1)]
-
+    eff[, regten := factor(p2_1, levels = c(1:3), labels = c(
+        "Alquiler",
+        "Propiedad",
+        "Cesion"
+    ))]
+    eff[, bage := factor(bage, levels = c(1:6), labels = c(
+        "Menor de 35 anos",
+        "Entre 35 y 44 anos",
+        "Entre 45 y 54 anos",
+        "Entre 55 y 64 anos",
+        "Entre 65 y 74 anos",
+        "Mayor de 74 anos"
+    ))]
 
     # Define the survey design for the year
     design <- svydesign(ids = ~1, weights = ~facine3, data = eff)
 
-    # Calculate weighted mean and median income
-    mean_inc <- coef(svymean(~renthog, design, na.rm = TRUE))
-    median_inc <- svyquantile(~renthog, design, quantiles = 0.5, ci = FALSE, na.rm = TRUE)[[1]][1]
+    yearly_stats <- svyby(~riquezainmo, ~regten, design, svymean, na.rm = TRUE) %>%
+        as.data.table()
 
-    # Append results to the storage vectors
-    mean_inc_c <- c(mean_inc_c, mean_inc)
-    median_inc_c <- c(median_inc_c, median_inc)
+    # Add year column and rename for clarity
+    yearly_stats[, year := year]
+    setnames(yearly_stats, old = c("riquezainmo", "regten"), new = c("age_group", "mean_wealth"))
+
+    # Store the results for this year
+    results_list[[as.character(year)]] <- yearly_stats[, .(year, age_group, mean_wealth)]
 }
-mean(eff$p1_2b_1) %>% print()
-mean(eff$p1_2d_1) %>% print()
 
 # 4. Combine and display the final results in a table
-results <- data.table(year = period, mean_income = mean_inc_c, median_income = median_inc_c)
-print(results)
+summary_table <- rbindlist(results_list, use.names = TRUE)
+print(summary_table, nrows = 20)
