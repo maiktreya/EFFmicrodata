@@ -53,4 +53,3 @@ for (year in period) {
 # 4. Combine and display the final results in a table
 summary_table <- rbindlist(results_list, use.names = TRUE)
 print(summary_table, nrows = 20)
-fwrite(summary_table, "out/wealth_age.csv")
