@@ -23,6 +23,7 @@ for (year in period) {
     message(paste("Processing year:", year))
 
     # Construct file path and load the pre-averaged data for the year
+    year = 2002
     file_path <- paste0("datasets/eff/", year, "-EFF.microdat.csv.gz")
     eff <- fread(file_path)
 
