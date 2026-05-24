@@ -1,106 +1,101 @@
-# analyze_yearly_data.R
-#
-# This script loops through the yearly, pre-averaged EFF microdata files
-# to calculate key income statistics, Gini for real estate wealth (riquezainmo),
-# and plot Lorenz curves for each survey year.
-
+# analyze_yearly_data_gini.R
 library(data.table)
 library(magrittr)
 library(survey)
-library(convey) # Added for inequality metrics
+library(convey)
+library(mitools)
 
-# 1. Define the survey years to analyze
-period <- c(2002, 2005, 2008, 2011, 2014, 2017, 2020, 2022)
+# 1. Load Data
+rm(list = ls())
+eff <- fread("datasets/full_eff.gz")
 
-# 2. Initialize lists to store the results
-results_list <- list()
+# 2. Vectorized Data Cleaning
+eff[, facine3 := as.numeric(facine3)]
+eff[, p2_5 := as.numeric(p2_5)][is.na(p2_5), p2_5 := 0]
+eff[, otraspr := as.numeric(otraspr)][is.na(otraspr), otraspr := 0]
+eff[, riquezainmo := p2_5 + otraspr]
 
-# Set up a grid layout for your plots so you can compare Lorenz curves side-by-side
-par(mfrow = c(2, 4))
+# 3. Handle Multiple Imputation
+eff_list <- split(eff, by = "imputation")
+mi_data <- mitools::imputationList(eff_list)
 
-# 3. Loop through each year, load the data, and perform calculations
-for (year in period) {
-    message(paste("Processing year:", year))
+# 4. Create and Prep Survey Design
+mi_design <- svydesign(ids = ~1, weights = ~facine3, data = mi_data)
+# Apply convey_prep to the entire multiply-imputed design object at once
+mi_design <- convey_prep(mi_design)
 
-    # Construct file path and load the pre-averaged data for the year
-    year = 2002
-    file_path <- paste0("datasets/eff/", year, "-EFF.microdat.csv.gz")
-    eff <- fread(file_path)
+# 5. Gini Coefficient for Real Estate Wealth by Year ONLY
+mi_ginis <- with(
+    mi_design,
+    svyby(~riquezainmo, ~year, design = .design, svygini, na.rm = TRUE)
+)
 
-    # Ensure correct data types for survey variables
-    eff[, facine3 := as.numeric(facine3)]
-    eff[, renthog := as.numeric(renthog)]
-    eff[, riquezanet := as.numeric(riquezanet)]
+# 6. Pool Results using Rubin's Rules
+pooled_ginis <- MIcombine(mi_ginis)
 
-    # Handle NAs during transformation just in case any missing rows break math
-    eff[, p2_5 := as.numeric(p2_5)][is.na(p2_5), p2_5 := 0]
-    eff[, otraspr := as.numeric(otraspr)][is.na(otraspr), otraspr := 0]
-    eff[, riquezainmo := p2_5 + otraspr]
-    eff[, regten := factor(p2_1, levels = c(1:3), labels = c(
-        "Alquiler",
-        "Propiedad",
-        "Cesion"
-    ))]
-    eff[, bage := factor(bage, levels = c(1:6), labels = c(
-        "Menor de 35 anos",
-        "Entre 35 y 44 anos",
-        "Entre 45 y 54 anos",
-        "Entre 55 y 64 anos",
-        "Entre 65 y 74 anos",
-        "Mayor de 74 anos"
-    ))]
+# 7. Tidy the Gini Results Table
+final_ginis <- data.table(
+    year = names(coef(pooled_ginis)),
+    gini = coef(pooled_ginis),
+    se   = SE(pooled_ginis)
+)
+# Ensure year is numeric for easy merging/subsetting
+final_ginis[, year := as.numeric(year)]
 
-    # Define the survey design for the year
-    design <- svydesign(ids = ~1, weights = ~facine3, data = eff)
+print(final_ginis)
 
-    # Prep design for inequality metrics
-    convey_design <- convey_prep(design)
+# 8. Exporting the Lorenz Curves to PNG
+plot_design <- mi_design$designs[[1]]
 
-    # --- Calculations ---
+des_2002 <- subset(plot_design, year == 2002)
+des_2022 <- subset(plot_design, year == 2022)
 
-    # A. Calculate Mean Income stats by category
-    yearly_stats <- svyby(~renthog, ~ regten + bage, design, svymean, na.rm = TRUE) %>%
-        as.data.table()
+gini_2002 <- final_ginis[year == 2002, gini]
+gini_2022 <- final_ginis[year == 2022, gini]
 
-    # B. Calculate Overall Gini Coefficient for Real Estate Wealth (riquezainmo)
-    # Note: Wealth distributions often contain zero or negative values.
-    # 'convey' handles zero/negative values by default, but it's good practice to ensure.
-    # B. Calculate Overall Gini Coefficient for Real Estate Wealth (riquezainmo)
-    gini_riquezainmo <- svygini(~riquezainmo, design = convey_design, na.rm = TRUE)
-    gini_val <- as.numeric(gini_riquezainmo) # Extract just the numeric value
+png("out/informeMICO/lorenz_2002_vs_2022.png", width = 800, height = 600, res = 120)
 
-    # C. Plot the Lorenz Curve for this year
+# Wrap the svylorenz calls to silence the harmless base R abline() parameter spam
+suppressWarnings({
+    # Draw the first Lorenz Curve (2002)
     svylorenz(~riquezainmo,
-        design = convey_design,
-        main = paste("Lorenz Curve:", year),
+        design = des_2002,
+        main = "Wealth Inequality Shift: 2002 vs 2022",
         xlab = "Cumulative % of Households",
         ylab = "Cumulative % of Real Estate Wealth",
         curve.col = "darkblue",
         lwd = 2,
-        na.rm = TRUE
+        type = "o", # "o" draws both lines and points
+        pch = 19, # Solid circular dots
+        quantiles = seq(0, 1, by = 0.05), # Calculate and plot every 5%
+        ci = FALSE
     )
 
-    # D. Add the Gini Value to the Chart
-    # round(..., 3) keeps it clean with three decimal places
-    text(
-        x = 0.1, y = 0.9,
-        labels = paste("Gini:", round(gini_val, 3)),
-        adj = c(0, 0.5), # Left-aligns the text at the x coordinate
-        col = "darkred",
-        font = 2
-    ) # Makes the text bold
+    # Overlay the second Lorenz Curve (2022)
+    svylorenz(~riquezainmo,
+        design = des_2022,
+        curve.col = "darkred",
+        lwd = 2,
+        type = "o",
+        pch = 19,
+        quantiles = seq(0, 1, by = 0.05),
+        ci = FALSE,
+        add = TRUE
+    )
+})
 
-    # Append the calculated Gini directly to your summary statistics rows
-    yearly_stats[, gini_riquezainmo := as.numeric(gini_riquezainmo)]
-    yearly_stats[, year := year]
+# Add the legend (updated to include the dots)
+legend("topleft",
+    legend = c(
+        paste("2002 (Gini:", round(gini_2002, 3), ")"),
+        paste("2022 (Gini:", round(gini_2022, 3), ")")
+    ),
+    col = c("darkblue", "darkred"),
+    lwd = 2,
+    pch = 19, # Tells the legend to display the dots on the lines
+    bty = "n",
+    cex = 1.1
+)
 
-    # Store the results for this year
-    results_list[[as.character(year)]] <- yearly_stats[, .SD]
-}
-
-# Reset plotting grid layout back to default (1x1)
-par(mfrow = c(1, 1))
-
-# 4. Combine and display the final results in a table
-summary_table <- rbindlist(results_list, use.names = TRUE)
-print(summary_table, nrows = 20)
+dev.off()
+fwrite(final_ginis, "out/informeMICO/inequality-inmo-gini.csv")

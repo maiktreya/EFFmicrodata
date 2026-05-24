@@ -11,14 +11,7 @@ eff <- fread("datasets/full_eff.gz")
 eff[, facine3      := as.numeric(facine3)]
 eff[, renthog      := as.numeric(renthog)]
 eff[, riquezanet   := as.numeric(riquezanet)]
-eff[, p2_5         := as.numeric(p2_5)][is.na(p2_5), p2_5 := 0]
-eff[, otraspr      := as.numeric(otraspr)][is.na(otraspr), otraspr := 0]
-eff[, riquezainmo  := p2_5 + otraspr]
 eff[, regten := factor(p2_1, levels = c(1:3), labels = c("Alquiler", "Propiedad", "Cesion"))]
-eff[, bage   := factor(bage, levels = c(1:6), labels = c(
-    "Menor de 35 anos", "Entre 35 y 44 anos", "Entre 45 y 54 anos",
-    "Entre 55 y 64 anos", "Entre 65 y 74 anos", "Mayor de 74 anos"
-))]
 
 # 3. Handle Multiple Imputation
 eff_list <- split(eff, by = "imputation")
@@ -28,8 +21,8 @@ mi_design <- svydesign(ids = ~1, weights = ~facine3, data = mi_data)
 # 4. Run Vectorized Estimations
 mi_mean_rent <- with(mi_design, svyby(~renthog, ~ year + regten, design = .design, svymean, na.rm = TRUE))
 mi_mean_riq  <- with(mi_design, svyby(~riquezanet, ~ year + regten, design = .design, svymean, na.rm = TRUE))
-mi_med_rent  <- with(mi_design, svyby(~renthog, ~ year + regten, design = .design, svyquantile, quantiles = 0.5, keep.var = TRUE, na.rm = TRUE))
-mi_med_riq   <- with(mi_design, svyby(~riquezanet, ~ year + regten, design = .design, svyquantile, quantiles = 0.5, keep.var = TRUE, na.rm = TRUE))
+mi_med_rent  <- with(mi_design, svyby(~renthog, ~ year + regten, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
+mi_med_riq   <- with(mi_design, svyby(~riquezanet, ~ year + regten, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
 
 # 5. Pool Results 
 pool_mean_rent <- MIcombine(mi_mean_rent)
@@ -47,9 +40,9 @@ final_stats <- data.table(
 )
 
 # 7. Split groups and clean up
-final_stats[, c("year", "regten") := tstrsplit(group, ".", fixed = TRUE)]
-final_stats[, group := NULL] 
-
+final_stats[, c("year", "regten") := tstrsplit(group, ".", fixed = TRUE)][, group := NULL] 
 setcolorder(final_stats, c("year", "regten", "mean_renthog", "median_renthog", "mean_riquezanet", "median_riquezanet"))
+
+# 8. Print results on screen an export to file
 print(final_stats)
 fwrite(final_stats, "out/informeMICO/inequality-tenancy.csv")
