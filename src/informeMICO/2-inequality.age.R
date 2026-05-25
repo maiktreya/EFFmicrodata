@@ -18,7 +18,7 @@ eff[, bage := factor(bage, levels = c(1:6), labels = c(
 
 # 3. Handle Multiple Imputation
 eff_list <- split(eff, by = "imputation")
-mi_data <- mitools::imputationList(eff_list)
+mi_data <- imputationList(eff_list)
 mi_design <- svydesign(ids = ~1, weights = ~facine3, data = mi_data)
 
 # 4. Run Vectorized Estimations
