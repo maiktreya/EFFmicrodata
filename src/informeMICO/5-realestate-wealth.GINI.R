@@ -45,10 +45,8 @@ print(final_ginis)
 
 # 8. Exporting the Lorenz Curves to PNG
 plot_design <- mi_design$designs[[1]]
-
 des_2002 <- subset(plot_design, year == 2002)
 des_2022 <- subset(plot_design, year == 2022)
-
 gini_2002 <- final_ginis[year == 2002, gini]
 gini_2022 <- final_ginis[year == 2022, gini]
 
