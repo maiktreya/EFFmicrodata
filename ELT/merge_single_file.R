@@ -1,6 +1,5 @@
 # test_survey.R
 library(data.table)
-library(survey)
 
 # 1) cargar el microdato combinado
 eff2002 <- fread("datasets/eff/2002-EFF.microdat.csv.gz")[, year := 2002]

@@ -1,9 +1,8 @@
 # analyze_yearly_data_gini.R
 library(data.table)
-library(magrittr)
 library(survey)
-library(convey)
 library(mitools)
+library(convey)
 
 # 1. Load Data
 rm(list = ls())
@@ -53,7 +52,7 @@ des_2022 <- subset(plot_design, year == 2022)
 gini_2002 <- final_ginis[year == 2002, gini]
 gini_2022 <- final_ginis[year == 2022, gini]
 
-png("out/informeMICO/lorenz_2002_vs_2022.png", width = 800, height = 600, res = 120)
+png("out/informeMICO/5-lorenz_2002_vs_2022.png", width = 800, height = 600, res = 120)
 
 # Wrap the svylorenz calls to silence the harmless base R abline() parameter spam
 suppressWarnings({
@@ -98,4 +97,4 @@ legend("topleft",
 )
 
 dev.off()
-fwrite(final_ginis, "out/informeMICO/inequality-inmo-gini.csv")
+fwrite(final_ginis, "out/informeMICO/5-inequality-inmo-gini.csv")

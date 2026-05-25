@@ -42,4 +42,4 @@ setorder(final_stats, year)
 
 # 8. Print results on screen an export to file
 print(final_stats)
-fwrite(final_stats, "out/informeMICO/inmo-inequality-quantiles.csv")
+fwrite(final_stats, "out/informeMICO/4-inmo-inequality-quantiles.csv")

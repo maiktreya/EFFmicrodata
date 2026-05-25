@@ -4,5 +4,5 @@ datasets/back
 README_SETUP_R_DEV.md
 setup-r-dev.ps1
 .vscode/settings.json
-doc/priv/P
+doc/priv/*
 datasets/full_eff.gz

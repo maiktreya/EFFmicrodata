@@ -9,9 +9,7 @@ eff <- fread("datasets/full_eff.gz")
 
 # 2. Vectorized Data Cleaning
 eff[, facine3 := as.numeric(facine3)]
-eff[, p2_5 := as.numeric(p2_5)][is.na(p2_5), p2_5 := 0]
-eff[, otraspr := as.numeric(otraspr)][is.na(otraspr), otraspr := 0]
-eff[, riquezainmo := p2_5 + otraspr]
+eff[, riquezanet := as.numeric(riquezanet)]
 
 # 3. Handle Multiple Imputation
 eff_list <- split(eff, by = "imputation")
@@ -29,8 +27,8 @@ calc_bracket_totals <- function(formula, design, ...) {
     # B. Isolate the wealth falling into these brackets
     # update() dynamically adds these columns to the active survey design subset
     des_up <- update(design,
-        wealth_bot50 = ifelse(riquezainmo <= q50, riquezainmo, 0),
-        wealth_top1  = ifelse(riquezainmo >= q99, riquezainmo, 0)
+        wealth_bot50 = ifelse(riquezanet <= q50, riquezanet, 0),
+        wealth_top1  = ifelse(riquezanet >= q99, riquezanet, 0)
     )
 
     # C. Return the weighted absolute totals
@@ -41,7 +39,7 @@ calc_bracket_totals <- function(formula, design, ...) {
 # svyby will slice the design by year, feed it to our custom function, and return the totals
 mi_totals <- with(
     mi_design,
-    svyby(~riquezainmo, ~year, design = .design, FUN = calc_bracket_totals)
+    svyby(~riquezanet, ~year, design = .design, FUN = calc_bracket_totals)
 )
 
 # 6. Pool Results (Applying Rubin's Rules for MI)
@@ -68,4 +66,4 @@ final_table[, rati050_1 := total_top_1 / total_bottom_50]
 
 # 9. Print results on screen and export to file
 print(final_table)
-fwrite(final_table, "out/informeMICO/inmo-inequality-ratio50_1.csv")
+fwrite(final_table, "out/informeMICO/3-inmo-inequality-ratio50_1.csv")
