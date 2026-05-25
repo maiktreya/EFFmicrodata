@@ -1,8 +1,5 @@
-# analyze_combined_stats.R
+# .Convertir los valores medios y medianos de renta a precios constantes de 2022
 library(data.table)
-library(magrittr)
-library(survey)
-library(mitools)
 
 # 1. Load Data
 IPC <- fread("datasets/IPC/base2022.csv")
