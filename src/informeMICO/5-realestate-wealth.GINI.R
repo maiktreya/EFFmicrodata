@@ -16,7 +16,7 @@ eff[, riquezainmo := p2_5 + otraspr]
 
 # 3. Handle Multiple Imputation
 eff_list <- split(eff, by = "imputation")
-mi_data <- mitools::imputationList(eff_list)
+mi_data <- imputationList(eff_list)
 
 # 4. Create and Prep Survey Design
 mi_design <- svydesign(ids = ~1, weights = ~facine3, data = mi_data)
