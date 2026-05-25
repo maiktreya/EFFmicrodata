@@ -19,7 +19,6 @@ mi_data <- imputationList(eff_list)
 mi_design <- svydesign(ids = ~1, weights = ~facine3, data = mi_data)
 
 # 4. Run Vectorized Estimations
-
 mi_med_riq_inm <- with(mi_design, svyby(~riquezainmo, ~year,
     design = .design, svyquantile,
     quantiles = c(seq(0.1, 0.9, by = 0.1), 0.95, 0.99),
