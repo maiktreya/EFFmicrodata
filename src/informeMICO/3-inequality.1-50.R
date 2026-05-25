@@ -66,4 +66,4 @@ final_table[, rati050_1 := total_top_1 / total_bottom_50]
 
 # 9. Print results on screen and export to file
 print(final_table)
-fwrite(final_table, "out/informeMICO/3-inmo-inequality-ratio50_1.csv")
+fwrite(final_table, "out/informeMICO/3-inequality-ratio50_1.csv")
