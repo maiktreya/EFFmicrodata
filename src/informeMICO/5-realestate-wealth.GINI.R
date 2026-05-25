@@ -10,8 +10,8 @@ eff <- fread("datasets/full_eff.gz")
 
 # 2. Vectorized Data Cleaning
 eff[, facine3 := as.numeric(facine3)]
-eff[, p2_5 := as.numeric(p2_5)][is.na(p2_5), p2_5 := 0]
-eff[, otraspr := as.numeric(otraspr)][is.na(otraspr), otraspr := 0]
+eff[, p2_5 := as.numeric(p2_5)][is.na(p2_5), p2_5 := 0] # viv. principal
+eff[, otraspr := as.numeric(otraspr)][is.na(otraspr), otraspr := 0] # otras. prop.
 eff[, riquezainmo := p2_5 + otraspr]
 
 # 3. Handle Multiple Imputation
@@ -96,5 +96,6 @@ legend("topleft",
     cex = 1.1
 )
 
+# Close graph and export to file image and table
 dev.off()
 fwrite(final_ginis, "out/informeMICO/5-inequality-inmo-gini.csv")
