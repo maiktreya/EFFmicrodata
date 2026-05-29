@@ -4,8 +4,7 @@ library(survey)
 library(mitools)
 
 # 1. Load Data
-rm(list = ls())
-eff <- fread("datasets/full_eff_exp.gz")
+source("src/informeMICO/prepare_vars.R")
 
 # 2. Vectorized Data Cleaning
 eff[, facine3 := as.numeric(facine3)]
