@@ -5,13 +5,14 @@ library(mitools)
 
 # 1. Load Data
 rm(list = ls())
-eff <- fread("datasets/full_eff.gz")
+eff <- fread("datasets/full_eff_exp.gz")
 
 # 2. Vectorized Data Cleaning
 eff[, facine3 := as.numeric(facine3)]
 eff[, renthog := as.numeric(renthog)]
 eff[, riquezanet := as.numeric(riquezanet)]
-eff[, regten := factor(p2_1, levels = c(1:3), labels = c("Alquiler", "Propiedad", "Cesion"))]
+eff[renta_alq > 0, p2_1 := 4]
+eff[, regten := factor(p2_1, levels = c(1:4), labels = c("Alquiler", "Propiedad", "Cesion", "Casero"))]
 
 # 3. Handle Multiple Imputation
 eff_list <- split(eff, by = "imputation")
