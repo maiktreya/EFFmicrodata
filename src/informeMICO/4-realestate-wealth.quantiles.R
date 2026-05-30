@@ -5,13 +5,12 @@ library(mitools)
 
 # 1. Load Data
 rm(list = ls())
-eff <- fread("datasets/full_eff.gz")
+eff <- fread("datasets/full_eff_refined.gz")
 
 # 2. Vectorized Data Cleaning
 eff[, facine3 := as.numeric(facine3)]
-eff[, p2_5 := as.numeric(p2_5)][is.na(p2_5), p2_5 := 0] # viv. principal
-eff[, otraspr := as.numeric(otraspr)][is.na(otraspr), otraspr := 0] # otras. prop.
-eff[, riquezainmo := p2_5 + otraspr]
+eff[, facine3 := as.numeric(riquezainmo)]
+
 
 # 3. Handle Multiple Imputation
 eff_list <- split(eff, by = "imputation")

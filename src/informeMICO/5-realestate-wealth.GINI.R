@@ -6,7 +6,7 @@ library(convey)
 
 # 1. Load Data
 rm(list = ls())
-eff <- fread("datasets/full_eff.gz")
+eff <- fread("datasets/full_eff_refined.gz")
 
 # 2. Vectorized Data Cleaning
 eff[, facine3 := as.numeric(facine3)]

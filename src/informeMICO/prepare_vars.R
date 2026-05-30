@@ -1,32 +1,74 @@
-# prepare syntetic variables
+# ==============================================================================
+# PREPARE SYNTHETIC VARIABLES: HOUSING WEALTH & RENTAL INCOME (EFF)
+# ==============================================================================
 
 library(data.table)
 rm(list = ls())
 gc(full = TRUE)
+
+# Load raw microdata
 eff <- fread("datasets/full_eff.gz")
 
-# Properties 1-3: rent amounts
-eff[, prop1 := 0][p2_35a_1 == 1 & p2_43_1 > 0, prop1 := p2_43_1]
-eff[, prop2 := 0][p2_35a_2 == 1 & p2_43_2 > 0, prop2 := p2_43_2]
-eff[, prop3 := 0][p2_35a_3 == 1 & p2_43_3 > 0, prop3 := p2_43_3]
+# ------------------------------------------------------------------------------
+# PHASE 1: UNIVERSAL DATA CLEANING & TYPE COERCION
+# ------------------------------------------------------------------------------
 
-# Properties 4+: type flags + joint rent
-eff[, prop41 := 0][p2_42s1_4 == 4 & p2_43_4 > 0, prop41 := 1]
-eff[, prop42 := 0][p2_42s2_4 == 4 & p2_43_4 > 0, prop42 := 1]
-eff[, prop43 := 0][p2_42s3_4 == 4 & p2_43_4 > 0, prop43 := 1]
-eff[, prop44 := 0][p2_42s4_4 == 4 & p2_43_4 > 0, prop44 := 1]
-eff[, prop45 := 0][p2_42s5_4 == 4 & p2_43_4 > 0, prop45 := 1]
-eff[, prop4 := prop41 + prop42 + prop43 + prop44 + prop45]
-eff[prop4 > 0, prop4 := p2_43_4]
+# Clean main residence value (always a residential vivienda)
+eff[, v_principal := as.numeric(p2_5)]
+eff[is.na(v_principal), v_principal := 0]
 
-# Total rental income (annualised)
-eff[, renta_alq := (prop1 + prop2 + prop3 + prop4) * 12]
+# Generate names for all secondary property columns to clean at once
+clean_cols <- c(
+    paste0("p2_35a_", 1:4), # Property Types (1 = Residential)
+    paste0("p2_43_", 1:4), # Monthly Rental Income
+    paste0("p2_39_", 1:4) # Market Value of Properties
+)
 
-# Number of rented properties (lower bound for 4+ block, exact for 1-3)
-eff[, n_props_alq := (prop1 > 0) + (prop2 > 0) + (prop3 > 0) + (prop4 > 0)]
+# Coerce all target columns to numeric and safely replace NAs with 0
+for (col in clean_cols) {
+    eff[, (col) := as.numeric(get(col))]
+    eff[is.na(get(col)), (col) := 0]
+}
 
-# Cleanup intermediates
-eff[, c(
-    "prop1", "prop2", "prop3", "prop4",
-    "prop41", "prop42", "prop43", "prop44", "prop45"
-) := NULL]
+# ------------------------------------------------------------------------------
+# PHASE 2: CALCULATE RESIDENTIAL RENTAL INCOME
+# ------------------------------------------------------------------------------
+
+# Extract monthly rent ONLY if asset is a residential unit and rent is positive
+eff[, prop1_rent := 0][p2_35a_1 == 1 & p2_43_1 > 0, prop1_rent := p2_43_1]
+eff[, prop2_rent := 0][p2_35a_2 == 1 & p2_43_2 > 0, prop2_rent := p2_43_2]
+eff[, prop3_rent := 0][p2_35a_3 == 1 & p2_43_3 > 0, prop3_rent := p2_43_3]
+eff[, prop4_rent := 0][p2_35a_4 == 1 & p2_43_4 > 0, prop4_rent := p2_43_4]
+
+# Calculate total annualized rental income
+eff[, renta_alq := (prop1_rent + prop2_rent + prop3_rent + prop4_rent) * 12]
+
+# Count the number of active rented residential properties
+eff[, n_props_alq := (prop1_rent > 0) + (prop2_rent > 0) + (prop3_rent > 0) + (prop4_rent > 0)]
+
+# ------------------------------------------------------------------------------
+# PHASE 3: CALCULATE GROSS HOUSING WEALTH
+# ------------------------------------------------------------------------------
+
+# Extract market values ONLY if the asset is a residential unit (drop garages/land/etc.)
+eff[, prop1_val := 0][p2_35a_1 == 1, prop1_val := p2_39_1]
+eff[, prop2_val := 0][p2_35a_2 == 1, prop2_val := p2_39_2]
+eff[, prop3_val := 0][p2_35a_3 == 1, prop3_val := p2_39_3]
+eff[, prop4_val := 0][p2_35a_4 == 1, prop4_val := p2_39_4]
+
+# Total Gross Housing Wealth = Main Residence + Residential Secondary Properties
+eff[, riquezainmo := v_principal + prop1_val + prop2_val + prop3_val + prop4_val]
+
+# ------------------------------------------------------------------------------
+# PHASE 4: CLEANUP INTERMEDIATE VARIABLES & SAVE
+# ------------------------------------------------------------------------------
+
+# Identify all temporary variables created during calculations
+temp_cols <- c(
+    "prop1_rent", "prop2_rent", "prop3_rent", "prop4_rent",
+    "prop1_val",  "prop2_val",  "prop3_val",  "prop4_val"
+)
+
+# Drop them from memory to keep the data.table lean
+eff[, (temp_cols) := NULL]
+
