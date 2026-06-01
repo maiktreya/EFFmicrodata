@@ -23,15 +23,15 @@ mi_design <- svydesign(ids = ~1, weights = ~facine3, data = mi_data)
 
 # 4. Run Vectorized Estimations
 mi_mean_rent <- with(mi_design, svyby(~renthog, ~ year + bage, design = .design, svymean, na.rm = TRUE))
-mi_mean_riq <- with(mi_design, svyby(~riquezanet, ~ year + bage, design = .design, svymean, na.rm = TRUE))
-mi_med_rent <- with(mi_design, svyby(~renthog, ~ year + bage, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
-mi_med_riq <- with(mi_design, svyby(~riquezanet, ~ year + bage, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
+mi_mean_riq  <- with(mi_design, svyby(~riquezanet, ~ year + bage, design = .design, svymean, na.rm = TRUE))
+mi_med_rent  <- with(mi_design, svyby(~renthog, ~ year + bage, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
+mi_med_riq   <- with(mi_design, svyby(~riquezanet, ~ year + bage, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
 
 # 5. Pool Results
 pool_mean_rent <- MIcombine(mi_mean_rent)
-pool_mean_riq <- MIcombine(mi_mean_riq)
-pool_med_rent <- MIcombine(mi_med_rent)
-pool_med_riq <- MIcombine(mi_med_riq)
+pool_mean_riq  <- MIcombine(mi_mean_riq)
+pool_med_rent  <- MIcombine(mi_med_rent)
+pool_med_riq   <- MIcombine(mi_med_riq)
 
 # 6. Column-Bind directly into a single data.table
 final_stats <- data.table(
@@ -44,9 +44,19 @@ final_stats <- data.table(
 
 # 7. Split groups and clean up
 final_stats[, c("year", "bage") := tstrsplit(group, ".", fixed = TRUE)][, group := NULL]
-setcolorder(final_stats, c("year", "bage", "mean_renthog", "median_renthog", "mean_riquezanet", "median_riquezanet"))
+
+# Calculate wealth ratios relative to the youngest cohort ("Menor de 35 anos") for each wave
+final_stats[, ratio_mean_wealth := mean_riquezanet / mean_riquezanet[bage == "Menor de 35 anos"], by = year]
+final_stats[, ratio_median_wealth := median_riquezanet / median_riquezanet[bage == "Menor de 35 anos"], by = year]
+
+# Organize columns and sort by wave
+setcolorder(final_stats, c(
+    "year", "bage", "mean_renthog", "median_renthog", 
+    "mean_riquezanet", "median_riquezanet", 
+    "ratio_mean_wealth", "ratio_median_wealth"
+))
 setorder(final_stats, year)
 
-# 8. Print results on screen an export to file
+# 8. Print results on screen and export to file
 print(final_stats)
 fwrite(final_stats, "out/informeMICO/2-inequality-age.csv")

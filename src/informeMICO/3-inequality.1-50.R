@@ -31,8 +31,8 @@ calc_bracket_totals <- function(formula, design, ...) {
         wealth_top1  = ifelse(riquezanet >= q99, riquezanet, 0)
     )
 
-    # C. Return the weighted absolute totals
-    svytotal(~ wealth_bot50 + wealth_top1, des_up, na.rm = TRUE)
+    # C. Return the weighted absolute totals (including total riquezanet as a denominator)
+    svytotal(~ riquezanet + wealth_bot50 + wealth_top1, des_up, na.rm = TRUE)
 }
 
 # 5. Run Vectorized Estimations
@@ -59,10 +59,14 @@ final_table <- dcast(final_stats, year ~ bracket, value.var = "total_wealth")
 
 # Rename columns for presentation
 setnames(final_table,
-    old = c("wealth_bot50", "wealth_top1"),
-    new = c("total_bottom_50", "total_top_1")
+    old = c("riquezanet", "wealth_bot50", "wealth_top1"),
+    new = c("total_wealth_absolute", "total_bottom_50", "total_top_1")
 )
-final_table[, rati050_1 := total_top_1 / total_bottom_50]
+
+# Calculate relative wealth shares (%) and the inequality ratio
+final_table[, pct_wealth_bottom_50 := total_bottom_50 / total_wealth_absolute]
+final_table[, pct_wealth_top_1    := total_top_1 / total_wealth_absolute]
+final_table[, ratio50_1            := total_top_1 / total_bottom_50]
 
 # 9. Print results on screen and export to file
 print(final_table)
