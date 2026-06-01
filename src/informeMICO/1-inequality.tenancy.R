@@ -4,13 +4,15 @@ library(survey)
 library(mitools)
 
 # 1. Load Data
-source("src/informeMICO/prepare_vars.R")
+rm(list = ls())
+gc(full = TRUE)
+eff <- fread("datasets/full_eff_refined.gz")
 
 # 2. Vectorized Data Cleaning
 eff[, facine3 := as.numeric(facine3)]
 eff[, renthog := as.numeric(renthog)]
 eff[, riquezanet := as.numeric(riquezanet)]
-eff[renta_alq > 0, p2_1 := 4]
+eff[renta_alq > 0, p2_1 := 4] # Identifying landlord households
 eff[, regten := factor(p2_1, levels = c(1:4), labels = c("Alquiler", "Propiedad", "Cesion", "Casero"))]
 
 # 3. Handle Multiple Imputation

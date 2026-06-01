@@ -72,3 +72,5 @@ temp_cols <- c(
 # Drop them from memory to keep the data.table lean
 eff[, (temp_cols) := NULL]
 
+# Export dataset with syntetic variables
+fwrite(eff, "datasets/full_eff_refined.gz")

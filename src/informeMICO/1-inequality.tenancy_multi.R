@@ -4,7 +4,9 @@ library(survey)
 library(mitools)
 
 # 1. Load Data
-source("src/informeMICO/prepare_vars.R")
+rm(list = ls())
+gc(full = TRUE)
+eff <- fread("datasets/full_eff_refined.gz")
 
 # 2. Vectorized Data Cleaning
 eff[, facine3 := as.numeric(facine3)]
@@ -16,9 +18,9 @@ eff[, regten := factor(
         renta_alq > 0 & n_props_alq == 3, 4L,
         renta_alq > 0 & n_props_alq == 2, 3L,
         renta_alq > 0 & n_props_alq == 1, 2L,
-        p2_1 == 3, 1L,
-        p2_1 == 2, 0L,
-        p2_1 == 1, -1L
+        p2_1 == 3, 1L, # Cesion
+        p2_1 == 2, 0L, # Propiedad
+        p2_1 == 1, -1L # Alquiler
     ),
     levels = -1L:5L,
     labels = c(
