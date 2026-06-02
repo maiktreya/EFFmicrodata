@@ -5,6 +5,7 @@ library(data.table)
 ipc <- fread("datasets/IPC/base2022.csv")
 inequality_ten <- fread("out/informeMICO/1-inequality-tenancy.csv")
 inequality_ten_multi <- fread("out/informeMICO/1-inequality-tenancy_multi.csv")
+inequality_ten_multi2 <- fread("out/informeMICO/1-inequality-tenancy_multi2.csv")
 inequality_age <- fread("out/informeMICO/2-inequality-age.csv")
 inequality_qui <- fread("out/informeMICO/4-inmo-inequality-quantiles.csv")
 
@@ -33,5 +34,6 @@ for (wave in waves) {
 # export results in 2022 real euros to csv files
 fwrite(inequality_ten, "out/informeMICO/IPC_2022/1-inequality-tenancy.csv")
 fwrite(inequality_ten_multi, "out/informeMICO/IPC_2022/1-inequality-tenancy_multi.csv")
+fwrite(inequality_ten_multi2, "out/informeMICO/IPC_2022/1-inequality-tenancy_multi2.csv")
 fwrite(inequality_age, "out/informeMICO/IPC_2022/2-inequality-age.csv")
 fwrite(inequality_qui, "out/informeMICO/IPC_2022/4-inmo-inequality-quantiles.csv")
