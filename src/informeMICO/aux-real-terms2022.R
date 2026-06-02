@@ -23,6 +23,10 @@ for (wave in waves) {
     inequality_ten_multi[year == wave, median_renthog_IPC := median_renthog * 100 / ipc[year == wave, ipc]]
     inequality_ten_multi[year == wave, mean_riquezanet_IPC := mean_riquezanet * 100 / ipc[year == wave, ipc]]
     inequality_ten_multi[year == wave, median_riquezanet_IPC := median_riquezanet * 100 / ipc[year == wave, ipc]]
+    inequality_ten_multi2[year == wave, mean_renthog_IPC := mean_renthog * 100 / ipc[year == wave, ipc]]
+    inequality_ten_multi2[year == wave, median_renthog_IPC := median_renthog * 100 / ipc[year == wave, ipc]]
+    inequality_ten_multi2[year == wave, mean_riquezanet_IPC := mean_riquezanet * 100 / ipc[year == wave, ipc]]
+    inequality_ten_multi2[year == wave, median_riquezanet_IPC := median_riquezanet * 100 / ipc[year == wave, ipc]]
     inequality_qui[year == wave, median_riquezainmo_IPC := median_riquezainmo * 100 / ipc[year == wave, ipc]]
 }
 
