@@ -62,4 +62,4 @@ setorder(final_stats, year)
 
 # 8. Print results on screen and export to file
 print(final_stats)
-fwrite(final_stats, "out/informeMICO/2-inequality-age-64.csv")
+fwrite(final_stats, "out/informeMICO/2-inequality-age.csv")
