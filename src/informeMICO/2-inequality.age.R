@@ -11,9 +11,10 @@ eff <- fread("datasets/full_eff.gz")
 eff[, facine3 := as.numeric(facine3)]
 eff[, renthog := as.numeric(renthog)]
 eff[, riquezanet := as.numeric(riquezanet)]
-eff[, bage := factor(bage, levels = c(1:6), labels = c(
+eff[bage %in% c(5,6), bage := 7] # categoria sintetica +64
+eff[, bage := factor(bage, levels = c(1:7), labels = c(
     "Menor de 35 anos", "Entre 35 y 44 anos", "Entre 45 y 54 anos",
-    "Entre 55 y 64 anos", "Entre 65 y 74 anos", "Mayor de 74 anos"
+    "Entre 55 y 64 anos", "Entre 65 y 74 anos", "Mayor de 74 anos", "Mayor de 64 años"
 ))]
 
 # 3. Handle Multiple Imputation
@@ -48,12 +49,15 @@ final_stats[, c("year", "bage") := tstrsplit(group, ".", fixed = TRUE)][, group 
 # Calculate wealth ratios relative to the youngest cohort ("Menor de 35 anos") for each wave
 final_stats[, ratio_mean_wealth := mean_riquezanet / mean_riquezanet[bage == "Menor de 35 anos"], by = year]
 final_stats[, ratio_median_wealth := median_riquezanet / median_riquezanet[bage == "Menor de 35 anos"], by = year]
+final_stats[, ratio_mean_renthog := mean_renthog / mean_renthog[bage == "Menor de 35 anos"], by = year]
+final_stats[, ratio_median_renthog := median_renthog / median_renthog[bage == "Menor de 35 anos"], by = year]
 
 # Organize columns and sort by wave
 setcolorder(final_stats, c(
     "year", "bage", "mean_renthog", "median_renthog", 
     "mean_riquezanet", "median_riquezanet", 
-    "ratio_mean_wealth", "ratio_median_wealth"
+    "ratio_mean_wealth", "ratio_median_wealth",
+    "ratio_mean_renthog", "ratio_median_renthog"
 ))
 setorder(final_stats, year)
 
