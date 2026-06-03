@@ -11,10 +11,9 @@ eff <- fread("datasets/full_eff.gz")
 eff[, facine3 := as.numeric(facine3)]
 eff[, renthog := as.numeric(renthog)]
 eff[, riquezanet := as.numeric(riquezanet)]
-eff[bage %in% c(5,6), bage := 7] # categoria sintetica +64
-eff[, bage := factor(bage, levels = c(1:7), labels = c(
+eff[, bage := factor(bage, levels = c(1:6), labels = c(
     "Menor de 35 anos", "Entre 35 y 44 anos", "Entre 45 y 54 anos",
-    "Entre 55 y 64 anos", "Entre 65 y 74 anos", "Mayor de 74 anos", "Mayor de 64 años"
+    "Entre 55 y 64 anos", "Entre 65 y 74 anos"
 ))]
 
 # 3. Handle Multiple Imputation
@@ -63,4 +62,4 @@ setorder(final_stats, year)
 
 # 8. Print results on screen and export to file
 print(final_stats)
-fwrite(final_stats, "out/informeMICO/2-inequality-age.csv")
+fwrite(final_stats, "out/informeMICO/2-inequality-age-64.csv")

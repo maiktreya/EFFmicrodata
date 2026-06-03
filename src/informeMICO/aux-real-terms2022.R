@@ -7,6 +7,11 @@ inequality_ten <- fread("out/informeMICO/1-inequality-tenancy.csv")
 inequality_ten_multi <- fread("out/informeMICO/1-inequality-tenancy_multi.csv")
 inequality_ten_multi2 <- fread("out/informeMICO/1-inequality-tenancy_multi2.csv")
 inequality_age <- fread("out/informeMICO/2-inequality-age.csv")
+inequality_age2 <- fread("out/informeMICO/2-inequality-age-64.csv")[bage == "Mayor de 64 años"]
+inequality_age <- rbind(inequality_age, inequality_age2)
+setorder(inequality_age, year)
+
+
 inequality_qui <- fread("out/informeMICO/4-inmo-inequality-quantiles.csv")
 
 waves <- unique(inequality_age$year)
