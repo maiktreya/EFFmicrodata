@@ -59,6 +59,12 @@ final_stats[, c("year", "regten") := tstrsplit(group, ".", fixed = TRUE)][, grou
 setcolorder(final_stats, c("year", "regten", "mean_renthog", "median_renthog", "mean_riquezanet", "median_riquezanet"))
 setorder(final_stats, year)
 
+# Calculate wealth/income ratios relative to the alquiler for each wave
+final_stats[, ratio_mean_wealth_alq := mean_riquezanet / mean_riquezanet[regten == "Alquiler"], by = year]
+final_stats[, ratio_median_wealth_alq := median_riquezanet / median_riquezanet[regten == "Alquiler"], by = year]
+final_stats[, ratio_mean_income_alq := mean_renthog / mean_renthog[regten == "Alquiler"], by = year]
+final_stats[, ratio_median_income_alq := median_renthog / median_renthog[regten == "Alquiler"], by = year]
+
 # 8. Print results on screen an export to file
 print(final_stats)
 fwrite(final_stats, "out/informeMICO/1-inequality-tenancy_multi.csv")
