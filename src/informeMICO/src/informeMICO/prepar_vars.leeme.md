@@ -1,2 +1,0 @@
-# prepar_vars.leeme
-
