@@ -55,9 +55,9 @@ suppressWarnings({
     # Draw the first Lorenz Curve (2002)
     svylorenz(~riquezainmo,
         design = des_2002,
-        main = "Wealth Inequality Shift: 2002 vs 2022",
-        xlab = "Cumulative % of Households",
-        ylab = "Cumulative % of Real Estate Wealth",
+        main = "Evolución de la desigualdad de la riqueza: 2002 vs 2022",
+        xlab = "Porcentaje acumulado de hogares",
+        ylab = "Porcentaje acumulado de total riqueza residencial",
         curve.col = "darkblue",
         lwd = 2,
         type = "o", # "o" draws both lines and points

@@ -13,7 +13,7 @@ eff[, renthog := as.numeric(renthog)]
 eff[, riquezanet := as.numeric(riquezanet)]
 eff[, bage := factor(bage, levels = c(1:6), labels = c(
     "Menor de 35 anos", "Entre 35 y 44 anos", "Entre 45 y 54 anos",
-    "Entre 55 y 64 anos", "Entre 65 y 74 anos"
+    "Entre 55 y 64 anos", "Entre 65 y 74 anos", "Mayores de 74 anos"
 ))]
 
 # 3. Handle Multiple Imputation
@@ -23,15 +23,15 @@ mi_design <- svydesign(ids = ~1, weights = ~facine3, data = mi_data)
 
 # 4. Run Vectorized Estimations
 mi_mean_rent <- with(mi_design, svyby(~renthog, ~ year + bage, design = .design, svymean, na.rm = TRUE))
-mi_mean_riq  <- with(mi_design, svyby(~riquezanet, ~ year + bage, design = .design, svymean, na.rm = TRUE))
-mi_med_rent  <- with(mi_design, svyby(~renthog, ~ year + bage, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
-mi_med_riq   <- with(mi_design, svyby(~riquezanet, ~ year + bage, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
+mi_mean_riq <- with(mi_design, svyby(~riquezanet, ~ year + bage, design = .design, svymean, na.rm = TRUE))
+mi_med_rent <- with(mi_design, svyby(~renthog, ~ year + bage, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
+mi_med_riq <- with(mi_design, svyby(~riquezanet, ~ year + bage, design = .design, svyquantile, quantiles = 0.5, na.rm = TRUE))
 
 # 5. Pool Results
 pool_mean_rent <- MIcombine(mi_mean_rent)
-pool_mean_riq  <- MIcombine(mi_mean_riq)
-pool_med_rent  <- MIcombine(mi_med_rent)
-pool_med_riq   <- MIcombine(mi_med_riq)
+pool_mean_riq <- MIcombine(mi_mean_riq)
+pool_med_rent <- MIcombine(mi_med_rent)
+pool_med_riq <- MIcombine(mi_med_riq)
 
 # 6. Column-Bind directly into a single data.table
 final_stats <- data.table(
@@ -53,8 +53,8 @@ final_stats[, ratio_median_renthog := median_renthog / median_renthog[bage == "M
 
 # Organize columns and sort by wave
 setcolorder(final_stats, c(
-    "year", "bage", "mean_renthog", "median_renthog", 
-    "mean_riquezanet", "median_riquezanet", 
+    "year", "bage", "mean_renthog", "median_renthog",
+    "mean_riquezanet", "median_riquezanet",
     "ratio_mean_wealth", "ratio_median_wealth",
     "ratio_mean_renthog", "ratio_median_renthog"
 ))
