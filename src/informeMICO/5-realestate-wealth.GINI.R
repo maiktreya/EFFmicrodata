@@ -3,6 +3,7 @@ library(data.table)
 library(survey)
 library(mitools)
 library(convey)
+library(ggplot2)
 
 # 1. Load Data
 rm(list = ls())
@@ -48,50 +49,42 @@ des_2022 <- subset(plot_design, year == 2022)
 gini_2002 <- final_ginis[year == 2002, gini]
 gini_2022 <- final_ginis[year == 2022, gini]
 
-png("out/informeMICO/charts/5-lorenz_2002_vs_2022.png", width = 800, height = 600, res = 120)
 
-# Wrap the svylorenz calls to silence the harmless base R abline() parameter spam
-suppressWarnings({
-    # Draw the first Lorenz Curve (2002)
-    svylorenz(~riquezainmo,
-        design = des_2002,
-        # main = "Evolución de la desigualdad de la riqueza: 2002 vs 2022",
-        xlab = "Porcentaje acumulado de hogares",
-        ylab = "Porcentaje acumulado de total riqueza residencial",
-        curve.col = "darkblue",
-        lwd = 2,
-        type = "o", # "o" draws both lines and points
-        pch = 19, # Solid circular dots
-        quantiles = seq(0, 1, by = 0.05), # Calculate and plot every 5%
-        ci = FALSE
-    )
+# Extraer puntos de la curva de Lorenz
+lorenz_2002 <- svylorenz(~riquezainmo, design = des_2002,
+                         quantiles = seq(0, 1, by = 0.05), ci = FALSE, plot = FALSE)
+lorenz_2022 <- svylorenz(~riquezainmo, design = des_2022,
+                         quantiles = seq(0, 1, by = 0.05), ci = FALSE, plot = FALSE)
 
-    # Overlay the second Lorenz Curve (2022)
-    svylorenz(~riquezainmo,
-        design = des_2022,
-        curve.col = "darkred",
-        lwd = 2,
-        type = "o",
-        pch = 19,
-        quantiles = seq(0, 1, by = 0.05),
-        ci = FALSE,
-        add = TRUE
-    )
-})
-
-# Add the legend (updated to include the dots)
-legend("topleft",
-    legend = c(
-        paste("2002 (Gini:", round(gini_2002, 3), ")"),
-        paste("2022 (Gini:", round(gini_2022, 3), ")")
-    ),
-    col = c("darkblue", "darkred"),
-    lwd = 2,
-    pch = 19, # Tells the legend to display the dots on the lines
-    bty = "n",
-    cex = 1.1
+df_lorenz <- rbind(
+  data.frame(x = seq(0, 1, by = 0.05),
+             y = as.numeric(lorenz_2002),
+             año = paste0("2002 (Gini: ", round(gini_2002, 3), ")")),
+  data.frame(x = seq(0, 1, by = 0.05),
+             y = as.numeric(lorenz_2022),
+             año = paste0("2022 (Gini: ", round(gini_2022, 3), ")"))
 )
 
-# Close graph and export to file image and table
-dev.off()
+label_2002 <- paste0("2002 (Gini: ", round(gini_2002, 3), ")")
+label_2022 <- paste0("2022 (Gini: ", round(gini_2022, 3), ")")
+
+g_lorenz <- ggplot(df_lorenz, aes(x = x, y = y, color = año)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey60", linewidth = 0.8) +
+  geom_line(linewidth = 1.2) +
+  scale_color_manual(values = setNames(c("#2980b9", "#e74c3c"), c(label_2002, label_2022))) +
+  scale_x_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Lo que era desigual en 2002 es aún más desigual en 2022:\nla vivienda como motor de desigualdad",
+       subtitle = "Curva de Lorenz de la riqueza en vivienda, comparación 2002-2022",
+       x = "Porcentaje acumulado de hogares",
+       y = "Porcentaje acumulado de riqueza en vivienda",
+       color = NULL) +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        plot.title = element_text(face = "bold", size = 12),
+        plot.subtitle = element_text(color = "grey50", size = 9))
+
+print(g_lorenz)
+ggsave("out/informeMICO/tablas_y_graficos/grafico_lorenz.png", g_lorenz, width = 8, height = 6, dpi = 300)
+# Exportar tabla
 fwrite(final_ginis, "out/informeMICO/5-inequality-inmo-gini.csv")
